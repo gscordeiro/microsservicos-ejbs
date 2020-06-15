@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<f:view transient="false">
+    <h:head/>
+    <h:body>
+            <h:form>
+                    <h:panelGrid columns="2">
+                            Nome <h:inputText value="#{clienteController.cliente.nome}"/>
+                            Preferencial? <h:selectBooleanCheckbox value="#{clienteController.cliente.preferencial}"/>
+                    </h:panelGrid>
+                    <h:commandButton value="Adicionar Contrato" action="#{clienteController.adicionarContrato()}">
+                        <f:ajax execute="@this" render="contratos"/>
+                    </h:commandButton>
+                    <h:dataTable id="contratos" value="#{clienteController.cliente.contratos}" var="contrato" border="1">
+                            <h:column>
+                                    <f:facet name="header">Descrição Contrato</f:facet>
+                                    <h:inputText value="#{contrato.descricao}"/>
+                            </h:column>
+                    </h:dataTable>
+                    <h:commandButton value="Salvar" action="#{clienteController.salvar()}"/>
+            </h:form>
+    </h:body>
+</f:view>
+</html>

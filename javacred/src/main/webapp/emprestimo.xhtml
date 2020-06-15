@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<f:view transient="true">
+
+	<h:head>
+		<script lang="javascript" src="./rest-js"/>
+		<h:outputScript library="js" name="jquery-3.4.1.min.js" />
+		<h:outputScript>
+			function buscar(){
+			
+				var id = prompt('Id do contrato')
+			
+				var contrato = ContratoBean.buscarContrato({identificador:id})
+				
+				$('#id').val(contrato.id)
+				$('#descricao').val(contrato.descricao)
+				$('#valor').val(contrato.valor)
+				$('#qtdeMeses').val(contrato.quantidadeMeses)
+				$('#taxa').val(contrato.taxaMensal)
+				$('#cliente').val(contrato.cliente.id)
+				
+			}
+		</h:outputScript>
+	</h:head>
+
+
+	<h:messages/>
+	
+	<c:set var="contrato" value="#{emprestimoController.contrato}"/>
+	<c:set var="clientes" value="#{emprestimoController.clientes}"/>
+
+	<h:body>
+		<h:form prependId="false">
+		
+			<h:inputHidden id="id" value="#{contrato.id}"/>
+			<input type="button" value="Buscar" onclick="buscar();"/>
+			
+			<h:panelGrid columns="2">
+				Cliente: <h:selectOneMenu id="cliente" value="#{contrato.cliente}">
+							<f:selectItem itemLabel="-- Selecione um cliente --" noSelectionOption="true"/>
+							<f:selectItems value="#{clientes}" var="c" itemValue="#{c}" itemLabel="#{c.nome}"/>
+						</h:selectOneMenu>
+						
+				Descrição: <h:inputText id="descricao" value="#{contrato.descricao}"/>
+				Valor: <h:inputText id="valor" value="#{contrato.valor}"/>
+				Qtde Meses: <h:inputText id="qtdeMeses" value="#{contrato.quantidadeMeses}"/>
+				Taxa Mensal: <h:inputText id="taxa" value="#{contrato.taxaMensal}"/>
+			</h:panelGrid>
+			<h:commandButton value="Registrar" action="#{emprestimoController.contratar()}"/>
+		</h:form>
+	</h:body>
+</f:view>
+</html>

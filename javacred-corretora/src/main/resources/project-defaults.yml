@@ -1,0 +1,8 @@
+thorntail:
+  datasources:
+    data-sources:
+      JavacredCorretoraDS:
+        driver-name: mysql
+        connection-url: jdbc:mysql://localhost/javacred_corretora?createDatabaseIfNotExist=true&useSSL=false
+        user-name: root
+        password: root

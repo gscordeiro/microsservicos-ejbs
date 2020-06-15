@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+    <context-param>
+        <param-name>resteasy.media.type.mappings</param-name>
+        <param-value>
+            html: text/html,
+            json: application/json,
+            xml: application/xml,
+            txt: text/plain
+        </param-value>
+    </context-param>
+    <context-param>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>Development</param-value>
+    </context-param>
+    <context-param>
+        <description>
+            Enables the ui:debug facelets tag.
+        </description>
+        <param-name>javax.faces.FACELETS_DEVELOPMENT</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <servlet>
+        <servlet-name>RESTEasy JSAPI</servlet-name>
+        <servlet-class>org.jboss.resteasy.jsapi.JSAPIServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RESTEasy JSAPI</servlet-name>
+        <url-pattern>/rest-js</url-pattern>
+    </servlet-mapping>
+
+</web-app>

@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+<h:head>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"/>
+</h:head>
+
+<h:body>
+	<h:messages/>
+
+	<h:form>
+
+        <c:set var="controller" value="#{atualizadorSaldoController}"/>
+
+		<h:outputText value="Quantidade de contratos: #{controller.numeroContratos}" id="numeroContratos"/>
+		&nbsp;
+		&nbsp;
+		<h:commandButton value="Gerar Contratos" action="#{controller.gerarContraros()}" styleClass="btn btn-primary">
+			<f:ajax render="numeroContratos"/>
+		</h:commandButton>
+
+		<br/>	
+		<br/>
+
+		<h:commandButton value="Atualizar saldo dos contratos" action="#{controller.aplicaCorrecaoSincrona()}" styleClass="btn btn-primary" style="width: 400px"/>
+		ultima execução:  #{controller.benchmarks['sync'].duracao} ms;
+		saldo geral:
+		<h:outputText value="#{controller.benchmarks['sync'].resultado}">
+			<f:convertNumber type="currency"/>
+		</h:outputText>
+
+		<br/>
+		<br/>
+		<h:commandButton value="Atualizar saldo dos contratos assincrono"
+							 action="#{controller.aplicaCorrecaoAssincrona()}" styleClass="btn btn-primary" style="width: 400px"/>
+
+		<h:panelGroup id="processamentoAssincrono">
+			ultima execução:  #{controller.benchmarks['async'].duracao} ms;
+			saldo geral:
+			<c:set var="saldoGeralAssincrono" value="#{controller.benchmarks['sync'].resultadoAsync}"/>
+			<h:outputText value="#{saldoGeralAssincrono.get()}" rendered="#{saldoGeralAssincrono.done}">
+				<f:convertNumber type="currency"/>
+			</h:outputText>
+			<h:outputText value="não calculado" rendered="#{empty saldoGeralAssincrono}"/>
+			<h:commandLink value="calculando... (clique para atualizar)"
+					rendered="#{not empty saldoGeralAssincrono and !saldoGeralAssincrono.done}" styleClass="btn btn-primary">
+				<f:ajax render="processamentoAssincrono"/>
+			</h:commandLink>
+		</h:panelGroup>
+
+		<br/>
+		<br/>
+		<h:commandButton value="Atualizar saldo dos contratos paralelo"
+						 action="#{controller.aplicaCorrecaoParalela()}" styleClass="btn btn-primary" style="width: 400px"/>
+		ultima execução:  #{controller.benchmarks['par'].duracao} ms;
+		saldo geral:
+		<h:outputText value="#{controller.benchmarks['par'].resultado}">
+			<f:convertNumber type="currency"/>
+		</h:outputText>
+
+		<br/>
+		<br/>
+		<h:commandButton value="Atualizar saldo dos contratos paralelo assincrono"
+							 action="#{controller.aplicaCorrecaoParalelaAssincrona()}" styleClass="btn btn-primary" style="width: 400px"/>
+		<h:panelGroup id="processamentoParaleloAssincrono">
+			ultima execução:  #{controller.benchmarks['parAsync'].duracao} ms;
+			saldo geral:
+			<c:set var="saldoParaleloAssincrono" value="#{controller.benchmarks['parAsync'].resultadoAsync}"/>
+			<h:outputText value="#{saldoParaleloAssincrono.get()}" rendered="#{saldoParaleloAssincrono.done}">
+				<f:convertNumber type="currency"/>
+			</h:outputText>
+			<h:outputText value="não calculado" rendered="#{empty saldoParaleloAssincrono}"/>
+			<h:panelGroup rendered="#{not empty saldoParaleloAssincrono and
+										!saldoParaleloAssincrono.done}">
+
+				<h:outputText value="calculando..."  />
+				<h:graphicImage library="images" name="processando.gif"/>
+			</h:panelGroup>
+			<p:poll update="processamentoParaleloAssincrono"
+					stop="#{empty saldoParaleloAssincrono or
+							saldoParaleloAssincrono.done}"/>
+		</h:panelGroup>
+
+		<br/>
+		<br/>
+		<h:commandButton value="Atualizar saldo dos contratos paralelo (via MES)"
+						 action="#{controller.aplicaCorrecaoViaMES()}" styleClass="btn btn-primary" style="width: 400px"/>
+		ultima execução:  #{controller.benchmarks['mes'].duracao} ms;
+		saldo geral:
+		<h:outputText value="#{controller.benchmarks['mes'].resultado}">
+			<f:convertNumber type="currency"/>
+		</h:outputText>
+	</h:form>
+</h:body>
+</html>

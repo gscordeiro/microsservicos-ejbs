@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<f:view transient="true">
+
+	<h:head>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"/>
+	</h:head>
+
+	<h:messages/>
+	
+	<h:body>
+		<h:form>
+		
+			<h:dataTable value="#{emprestimoController.contratos}" var="contrato" styleClass="table">
+				<h:column>
+					<f:facet name="header">ID</f:facet>
+					#{contrato.id}
+				</h:column>
+				<h:column>
+					<f:facet name="header">Cliente</f:facet>
+					#{contrato.cliente.nome}
+				</h:column>
+				<h:column>
+					<f:facet name="header">Descricao</f:facet>
+					#{contrato.descricao}
+				</h:column>
+				<h:column>
+					<f:facet name="header">Valor</f:facet>
+					<h:outputText value="#{contrato.valor}" >
+						<f:convertNumber type="currency" />
+					</h:outputText>
+				</h:column>
+				<h:column>
+					<f:facet name="header">Saldo Devedor</f:facet>
+					<h:outputText value="#{contrato.saldo}" >
+						<f:convertNumber type="currency" />
+					</h:outputText>
+				</h:column>
+				<h:column>
+					<f:facet name="header">Qtde. Meses</f:facet>
+					#{contrato.quantidadeMeses}
+				</h:column>
+				<h:column>
+					<f:facet name="header">Ações</f:facet>
+					<h:commandButton value="Quitar" action="#{emprestimoController.quitar(contrato)}" styleClass="btn btn-primary"/>
+				</h:column>
+			</h:dataTable>
+			
+		</h:form>
+	</h:body>
+</f:view>
+</html>

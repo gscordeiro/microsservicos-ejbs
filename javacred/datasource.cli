@@ -1,0 +1,15 @@
+embed-server --server-config=standalone-full.xml
+batch
+
+module add --name=com.mysql \
+	--resources=/Users/gilliard/Downloads/mysql-connector-java-5.1.13-bin.jar \
+	--dependencies=javax.api,javax.transaction.api
+
+/subsystem=datasources/jdbc-driver=mysql\
+		:add(driver-name=mysql,driver-module-name=com.mysql)
+
+data-source add --jndi-name=java:/datasources/JavacredDS --name=JavacredPool \
+--connection-url=jdbc:mysql://localhost/javacred?createDatabaseIfNotExist=true \
+--driver-name=mysql --user-name=root --password=root
+
+run-batch
