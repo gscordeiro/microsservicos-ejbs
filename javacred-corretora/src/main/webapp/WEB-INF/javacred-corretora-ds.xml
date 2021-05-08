@@ -1,0 +1,13 @@
+<datasources xmlns="http://www.jboss.org/ironjacamar/schema">
+  <datasource jndi-name="java:/datasources/JavacredCorretoraDS" pool-name="JavacredPool">
+      <connection-url>jdbc:mysql://localhost/javacred_corretora?createDatabaseIfNotExist=true</connection-url>
+      <driver>mysql</driver>
+      <pool>
+          <max-pool-size>30</max-pool-size>
+      </pool>
+      <security>
+          <user-name>root</user-name>
+          <password>root</password>
+      </security>
+  </datasource>
+</datasources>

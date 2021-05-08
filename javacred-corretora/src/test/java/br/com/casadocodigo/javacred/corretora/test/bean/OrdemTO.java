@@ -1,5 +1,6 @@
 package br.com.casadocodigo.javacred.corretora.test.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Date;
@@ -15,6 +16,7 @@ public class OrdemTO {
     private double quantidade;
     private double valorAtivo;
     private double valorTotal;
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Date ultimaModificacao;
     private String ip;
 
