@@ -1,7 +1,8 @@
 package br.com.casadocodigo.javacred.restclient;
 
 import br.com.casadocodigo.javacred.rest.Cotacao;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
@@ -9,6 +10,7 @@ import javax.ws.rs.core.Response;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class CotacaoMoedasBeanTest extends JavacredTestBase {
 
@@ -81,7 +83,8 @@ public class CotacaoMoedasBeanTest extends JavacredTestBase {
 
     }
 
-    @Test(timeout = 5000)
+    @Test
+    @Timeout(value = 5, unit = TimeUnit.SECONDS)
     public void testaCotacaoEuroEmRealRx() throws ExecutionException, InterruptedException {
 
         WebTarget cotacaoMoedasBean = javacred.path("cotacao");

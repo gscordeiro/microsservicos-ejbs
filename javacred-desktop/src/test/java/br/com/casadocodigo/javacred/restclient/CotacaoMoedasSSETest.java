@@ -1,7 +1,7 @@
 package br.com.casadocodigo.javacred.restclient;
 
 import br.com.casadocodigo.javacred.rest.Cotacao;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;

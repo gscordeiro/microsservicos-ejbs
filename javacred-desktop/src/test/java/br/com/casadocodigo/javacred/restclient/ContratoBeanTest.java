@@ -2,8 +2,11 @@ package br.com.casadocodigo.javacred.restclient;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.*;
 import br.com.casadocodigo.javacred.restclient.bean.MeuContrato;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -20,7 +23,7 @@ public class ContratoBeanTest extends JavacredTestBase {
 
     private Response response;
 
-    @Before
+    @BeforeEach
     public void fazRequisicao(){
         WebTarget contratoBean = javacred.path("contrato")
                 .path("{id}")
@@ -32,7 +35,7 @@ public class ContratoBeanTest extends JavacredTestBase {
         response = requestBuilder.get();
     }
 
-    @After
+    @AfterEach
     public void fechaResposta(){
         response.close();
     }
@@ -54,7 +57,7 @@ public class ContratoBeanTest extends JavacredTestBase {
 
         String json = response.readEntity(String.class);
 
-        Assert.assertEquals(200, response.getStatus());
+        Assertions.assertEquals(200, response.getStatus());
 
         System.out.println(json);
 
@@ -74,10 +77,10 @@ public class ContratoBeanTest extends JavacredTestBase {
         String descricao = rootNode.path("descricao").asText();
         String nomeCliente = rootNode.path("cliente").path("nome").asText();
 
-        Assert.assertNotNull(descricao);
+        Assertions.assertNotNull(descricao);
         System.out.println(descricao);
 
-        Assert.assertNotNull(nomeCliente);
+        Assertions.assertNotNull(nomeCliente);
         System.out.println(nomeCliente);
 
     }
@@ -89,10 +92,10 @@ public class ContratoBeanTest extends JavacredTestBase {
         String descricao = contrato.getDescricao();
         String nomeCliente = contrato.getCliente().getNome();
 
-        Assert.assertNotNull(descricao);
+        Assertions.assertNotNull(descricao);
         System.out.println(descricao);
 
-        Assert.assertNotNull(nomeCliente);
+        Assertions.assertNotNull(nomeCliente);
         System.out.println(nomeCliente);
 
     }
@@ -111,12 +114,12 @@ public class ContratoBeanTest extends JavacredTestBase {
 
         //escrevendo resultado antes do Java 8
         for(MeuContrato contrato : contratos){
-                Assert.assertNotNull(contrato);
+            Assertions.assertNotNull(contrato);
                 System.out.println(contrato);
         }
 
         //ou com Java 8...
-        contratos.forEach(Assert::assertNotNull);
+        contratos.forEach(Assertions::assertNotNull);
         contratos.forEach(System.out::println);
 
     }

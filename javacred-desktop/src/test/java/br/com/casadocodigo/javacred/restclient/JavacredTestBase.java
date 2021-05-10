@@ -1,7 +1,7 @@
 package br.com.casadocodigo.javacred.restclient;
 
 
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -13,7 +13,7 @@ public abstract class JavacredTestBase {
 
     static WebTarget javacred;
 
-    @BeforeClass
+    @BeforeAll
     public static void criaCliente() throws Exception {
 
         ClientBuilder clientBuilder = ClientBuilder.newBuilder();
