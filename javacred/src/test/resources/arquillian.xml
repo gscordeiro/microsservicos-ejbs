@@ -6,8 +6,8 @@
     <container qualifier="wildfly" default="true">
         <configuration>
 <!--            <property name="java.util.logging.manager">org.jboss.logmanager.LogManager</property>-->
-            <property name="jbossHome">/Users/gilliard/OneDrive/Dev/servidores/wildfly-19.0.0.Final</property>
-            <property name="modulePath">/Users/gilliard/OneDrive/Dev/servidores/wildfly-19.0.0.Final/modules</property>
+            <property name="jbossHome">/Users/gilliard/servidores/wildfly-23.0.2.Final</property>
+            <property name="modulePath">/Users/gilliard/servidores/wildfly-23.0.2.Final/modules</property>
 <!--            <property name="serverConfig">standalone-full.xml</property>-->
         </configuration>
     </container>
