@@ -2,9 +2,9 @@ package br.com.casadocodigo.javacred.corretora.test;
 
 import br.com.casadocodigo.javacred.corretora.test.bean.OrdemTO;
 import org.jboss.resteasy.client.jaxrs.cache.BrowserCacheFeature;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -16,7 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Date;
 
-@Ignore
+@Disabled
 public class OrdemBeanTest {
 
     @Test
@@ -64,10 +64,10 @@ public class OrdemBeanTest {
 
         OrdemTO ordemSalva = response.readEntity(OrdemTO.class);
 
-        Assert.assertNotNull(ordemSalva.getId());
-        Assert.assertEquals(OrdemTO.Tipo.COMPRA, ordemSalva.getTipo());
-        Assert.assertEquals("PETR4", ordemSalva.getCodigoAtivo());
-        Assert.assertEquals(100, ordemSalva.getQuantidade(), 0.001);
+        Assertions.assertNotNull(ordemSalva.getId());
+        Assertions.assertEquals(OrdemTO.Tipo.COMPRA, ordemSalva.getTipo());
+        Assertions.assertEquals("PETR4", ordemSalva.getCodigoAtivo());
+        Assertions.assertEquals(100, ordemSalva.getQuantidade(), 0.001);
 
         System.out.println(ordemSalva);
 
@@ -124,13 +124,13 @@ public class OrdemBeanTest {
         System.out.println(response);
 
         if(objetoNovo){
-            Assert.assertEquals(200, response.getStatus());
+            Assertions.assertEquals(200, response.getStatus());
         }
         else if(alterarOrdem){
-            Assert.assertEquals(204, response.getStatus());
+            Assertions.assertEquals(204, response.getStatus());
         }
         else{
-            Assert.assertEquals(412, response.getStatus());
+            Assertions.assertEquals(412, response.getStatus());
         }
 
         response.close();

@@ -3,10 +3,10 @@ package br.com.casadocodigo.javacred.corretora.test;
 import br.com.casadocodigo.javacred.corretora.test.bean.OrdemTO;
 import br.com.casadocodigo.javacred.corretora.test.proxy.OrdemBeanProxy;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -14,12 +14,12 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Response;
 
-@Ignore
+@Disabled
 public class OrdemBeanProxyTest {
 
     private OrdemBeanProxy ordemBean;
 
-    @Before
+    @BeforeEach
     public void configuraProxy(){
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target("http://localhost:8080");
@@ -33,7 +33,7 @@ public class OrdemBeanProxyTest {
 
         OrdemTO ordem = ordemBean.buscar(1);
 
-        Assert.assertNotNull(ordem);
+        Assertions.assertNotNull(ordem);
 
         System.out.println(ordem);
     }
@@ -46,10 +46,10 @@ public class OrdemBeanProxyTest {
 
         OrdemTO ordemSalva = ordemBean.salvar(novaOrdem);
 
-        Assert.assertNotNull(ordemSalva.getId());
-        Assert.assertEquals(OrdemTO.Tipo.VENDA, ordemSalva.getTipo());
-        Assert.assertEquals("BBAS3", ordemSalva.getCodigoAtivo());
-        Assert.assertEquals(200, ordemSalva.getQuantidade(), 0.001);
+        Assertions.assertNotNull(ordemSalva.getId());
+        Assertions.assertEquals(OrdemTO.Tipo.VENDA, ordemSalva.getTipo());
+        Assertions.assertEquals("BBAS3", ordemSalva.getCodigoAtivo());
+        Assertions.assertEquals(200, ordemSalva.getQuantidade(), 0.001);
 
         System.out.println(ordemSalva);
     }

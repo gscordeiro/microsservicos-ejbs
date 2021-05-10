@@ -3,9 +3,9 @@ package br.com.casadocodigo.javacred.corretora.test;
 import br.com.casadocodigo.javacred.corretora.entity.LogConsulta;
 import br.com.casadocodigo.javacred.corretora.cliente.Consulta;
 import org.jboss.resteasy.client.jaxrs.cache.BrowserCacheFeature;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-@Ignore
+@Disabled
 public class LogConsultaTest {
 
     @Test
@@ -57,7 +57,7 @@ public class LogConsultaTest {
                 cotacaoCache = logConsulta.getValorAtivo();
             }
 
-            Assert.assertEquals(cotacaoCache, logConsulta.getValorAtivo(), 0.001);
+            Assertions.assertEquals(cotacaoCache, logConsulta.getValorAtivo(), 0.001);
             System.out.println(cotacaoCache + " = " + logConsulta.getValorAtivo());
 
             System.out.println(new Date());
