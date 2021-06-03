@@ -17,7 +17,7 @@
     <version.wildfly.jar.plugin>4.0.3.Final</version.wildfly.jar.plugin>
     <version.wildfly>23.0.2.Final</version.wildfly>
     <version.wildfly.datasources.galleon.pack>2.0.0.Final</version.wildfly.datasources.galleon.pack>
-    <version.resteasy>3.15.1.Final</version.resteasy>
+    <version.resteasy>4.5.6.Final-redhat-00004</version.resteasy>
   </properties>
 
   <dependencies>
