@@ -7,7 +7,7 @@
       </pool>
       <security>
           <user-name>root</user-name>
-          <password>root</password>
+          <password>rootroot</password>
       </security>
   </datasource>
 </datasources>

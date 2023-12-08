@@ -38,7 +38,11 @@ public class AjustadorContratoBean {
 		} catch (InterruptedException e) {}
 		
 //		em.merge(contrato); //versão antiga
-		em.unwrap(Session.class).update(contrato);
+		em.createQuery("update Contrato c set c.saldo = :saldo, c.ultimaCorrecao = :ultimaCorrecao where c.id = :id")
+                        .setParameter("saldo", contrato.getSaldo())
+                        .setParameter("ultimaCorrecao", contrato.getUltimaCorrecao())
+                        .setParameter("id", contrato.getId())
+                        .executeUpdate();
 
 		return novoSaldo;
 	}
