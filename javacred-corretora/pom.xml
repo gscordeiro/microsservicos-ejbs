@@ -85,7 +85,7 @@
             <layer>ejb-lite</layer>
             <layer>jpa</layer>
             <layer>jsf</layer>
-            <layer>mysql-driver</layer>
+            <layer>h2-driver</layer>
           </layers>
           <excluded-layers>
             <layer>deployment-scanner</layer>

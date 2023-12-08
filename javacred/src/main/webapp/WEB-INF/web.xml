@@ -30,5 +30,13 @@
         <servlet-name>RESTEasy JSAPI</servlet-name>
         <url-pattern>/rest-js</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>H2Console</servlet-name>
+        <servlet-class>org.h2.server.web.WebServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>H2Console</servlet-name>
+        <url-pattern>/h2/*</url-pattern>
+    </servlet-mapping>
 
 </web-app>

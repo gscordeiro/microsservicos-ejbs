@@ -1,13 +1,10 @@
 <datasources xmlns="http://www.jboss.org/ironjacamar/schema">
   <datasource jndi-name="java:/datasources/JavacredDS" pool-name="JavacredPool">
-      <connection-url>jdbc:mysql://localhost/javacred?createDatabaseIfNotExist=true</connection-url>
-      <driver>mysql-connector-java-8.0.16.jar</driver>
-      <pool>
-          <max-pool-size>30</max-pool-size>
-      </pool>
+      <connection-url>jdbc:h2:file:~/Temp/javacred_db;AUTO_SERVER=TRUE</connection-url>
+      <driver>h2</driver>
       <security>
-          <user-name>root</user-name>
-          <password>rootroot</password>
+          <user-name>sa</user-name>
+          <password>sa</password>
       </security>
   </datasource>
 </datasources>
