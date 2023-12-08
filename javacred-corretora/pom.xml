@@ -8,23 +8,25 @@
   <packaging>war</packaging>
 
   <properties>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <failOnMissingWebXml>false</failOnMissingWebXml>
 
-    <version.wildfly.jar.plugin>4.0.3.Final</version.wildfly.jar.plugin>
-    <version.wildfly>23.0.2.Final</version.wildfly>
-    <version.wildfly.datasources.galleon.pack>2.0.0.Final</version.wildfly.datasources.galleon.pack>
-    <version.resteasy>3.15.1.Final</version.resteasy>
+    <version.wildfly.jar.plugin>10.0.0.Final</version.wildfly.jar.plugin>
+    <version.jakarta.ee>10.0.0</version.jakarta.ee>
+    <version.wildfly>30.0.1.Final</version.wildfly>
+    <version.microprofile>6.0</version.microprofile>
+    <version.wildfly.datasources.galleon.pack>6.0.0.Final</version.wildfly.datasources.galleon.pack>
+    <version.resteasy>6.2.6.Final</version.resteasy>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.eclipse.microprofile</groupId>
       <artifactId>microprofile</artifactId>
-      <version>3.3</version>
+      <version>${version.microprofile}</version>
       <type>pom</type>
       <scope>provided</scope>
     </dependency>
@@ -32,7 +34,7 @@
     <dependency>
       <groupId>jakarta.platform</groupId>
       <artifactId>jakarta.jakartaee-web-api</artifactId>
-      <version>8.0.0</version>
+      <version>${version.jakarta.ee}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -51,7 +53,7 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <version>5.7.1</version>
+      <version>5.10.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

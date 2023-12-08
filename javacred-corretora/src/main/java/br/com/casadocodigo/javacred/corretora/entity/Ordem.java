@@ -2,7 +2,7 @@ package br.com.casadocodigo.javacred.corretora.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Date;
 
 import static br.com.casadocodigo.javacred.corretora.entity.Ordem.BUSCAR_DATA_ULTIMA_ALTERACAO;

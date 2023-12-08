@@ -2,11 +2,11 @@ package br.com.casadocodigo.javacred.corretora.test.proxy;
 
 import br.com.casadocodigo.javacred.corretora.test.bean.OrdemTO;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.EntityTag;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.EntityTag;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 @Path("/ordem")
 @Produces(MediaType.APPLICATION_JSON)

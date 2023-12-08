@@ -2,13 +2,13 @@ package br.com.casadocodigo.javacred.corretora.rest;
 
 import br.com.casadocodigo.javacred.corretora.entity.Ordem;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.PersistenceContext;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.*;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
