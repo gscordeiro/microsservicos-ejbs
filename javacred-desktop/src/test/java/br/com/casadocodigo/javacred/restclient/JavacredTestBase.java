@@ -11,6 +11,7 @@ import java.security.KeyStore;
 
 public abstract class JavacredTestBase {
 
+    public static final String JAVACRED_BASE_URI = "http://localhost:8080/javacred/rest";
     static WebTarget javacred;
 
     @BeforeAll

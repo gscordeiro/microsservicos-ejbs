@@ -46,7 +46,7 @@ public class ContratoBeanTest extends JavacredTestBase {
         //código duplicado apenas para ficar igual ao exemplo do livro.
         Client client = ClientBuilder.newClient();
         WebTarget javacred =
-                client.target("http://localhost:8080/javacred/rest");
+                client.target(JAVACRED_BASE_URI);
 
         WebTarget contratoBean = javacred.path("contrato");
 

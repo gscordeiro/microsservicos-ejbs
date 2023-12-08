@@ -17,7 +17,7 @@ public class CotacaoMoedasSSETest extends JavacredTestBase {
     public void testeSimplesSSE(){
 
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target("http://localhost:8080/javacred/rest/acompanhar-cotacao/dolar");
+        WebTarget target = client.target(JAVACRED_BASE_URI + "/acompanhar-cotacao/dolar");
 
         try (SseEventSource source = SseEventSource.target(target).build()) {
             source.register(System.out::println);
