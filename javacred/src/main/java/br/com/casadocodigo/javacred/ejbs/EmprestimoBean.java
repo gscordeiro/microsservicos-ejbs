@@ -3,10 +3,10 @@ package br.com.casadocodigo.javacred.ejbs;
 import br.com.casadocodigo.javacred.entidades.Contrato;
 import br.com.casadocodigo.javacred.exceptions.JavacredApplicationException;
 
-import javax.annotation.Resource;
-import javax.ejb.EJBContext;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import jakarta.annotation.Resource;
+import jakarta.ejb.EJBContext;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 import java.util.List;
 
 @Stateless

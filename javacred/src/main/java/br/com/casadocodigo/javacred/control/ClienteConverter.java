@@ -3,11 +3,11 @@ package br.com.casadocodigo.javacred.control;
 import br.com.casadocodigo.javacred.ejbs.ClienteBean;
 import br.com.casadocodigo.javacred.entidades.Cliente;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.FacesConverter;
-import javax.inject.Inject;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.FacesConverter;
+import jakarta.inject.Inject;
 
 //forma de fazer com JSF 2.2
 //@Named("clienteConverter")

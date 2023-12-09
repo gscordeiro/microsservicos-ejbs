@@ -6,9 +6,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import br.com.casadocodigo.javacred.entidades.RegistroEmprestimo;
 import br.com.casadocodigo.javacred.entidades.RegistroEmprestimo.Tipo;

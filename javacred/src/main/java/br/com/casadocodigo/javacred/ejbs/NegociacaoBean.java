@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.PreDestroy;
-import javax.ejb.Remove;
-import javax.ejb.Stateful;
-import javax.ejb.StatefulTimeout;
+import jakarta.annotation.PreDestroy;
+import jakarta.ejb.Remove;
+import jakarta.ejb.Stateful;
+import jakarta.ejb.StatefulTimeout;
 
 import br.com.casadocodigo.javacred.entidades.Cliente;
 import br.com.casadocodigo.javacred.entidades.Contrato;

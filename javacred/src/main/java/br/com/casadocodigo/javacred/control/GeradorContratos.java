@@ -5,12 +5,12 @@ import br.com.casadocodigo.javacred.entidades.Contrato;
 import br.com.casadocodigo.javacred.entidades.Indice;
 import br.com.casadocodigo.javacred.entidades.IndiceValor;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
 import java.time.YearMonth;
 import java.util.Arrays;
 

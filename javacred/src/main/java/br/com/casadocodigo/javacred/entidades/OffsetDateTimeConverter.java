@@ -1,7 +1,7 @@
 package br.com.casadocodigo.javacred.entidades;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;

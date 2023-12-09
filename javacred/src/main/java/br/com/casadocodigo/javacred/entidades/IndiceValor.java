@@ -1,6 +1,6 @@
 package br.com.casadocodigo.javacred.entidades;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.YearMonth;
 
 @Entity

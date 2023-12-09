@@ -1,13 +1,13 @@
 package br.com.casadocodigo.javacred.ejbs;
 
 import br.com.casadocodigo.javacred.entidades.Contrato;
-import org.hibernate.Session;
+//import org.hibernate.Session;
 
-import javax.ejb.AsyncResult;
-import javax.ejb.Asynchronous;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.ejb.AsyncResult;
+import jakarta.ejb.Asynchronous;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.time.YearMonth;
 import java.util.concurrent.Future;
 

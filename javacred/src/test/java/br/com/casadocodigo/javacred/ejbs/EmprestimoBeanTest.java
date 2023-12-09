@@ -3,13 +3,13 @@ package br.com.casadocodigo.javacred.ejbs;
 import br.com.casadocodigo.javacred.entidades.Cliente;
 import br.com.casadocodigo.javacred.entidades.Contrato;
 import br.com.casadocodigo.javacred.exceptions.JavacredApplicationException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.ArgumentCaptor;
 
-import javax.ejb.EJBContext;
-import javax.enterprise.event.Event;
+import jakarta.ejb.EJBContext;
+import jakarta.enterprise.event.Event;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class EmprestimoBeanTest {

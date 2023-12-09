@@ -3,19 +3,19 @@ package br.com.casadocodigo.javacred;
 import br.com.casadocodigo.javacred.ejbs.ContratoBean;
 import br.com.casadocodigo.javacred.entidades.Cliente;
 import br.com.casadocodigo.javacred.entidades.Contrato;
-import org.hibernate.Session;
+//import org.hibernate.Session;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.faces.annotation.FacesConfig;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
+import jakarta.faces.annotation.FacesConfig;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 @Singleton
 @Startup
-@FacesConfig(version = FacesConfig.Version.JSF_2_3)
+@FacesConfig
 public class StartupConfig {
 
     @PersistenceContext

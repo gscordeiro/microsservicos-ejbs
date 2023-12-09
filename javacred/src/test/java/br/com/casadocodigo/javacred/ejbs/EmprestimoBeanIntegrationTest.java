@@ -5,30 +5,30 @@ import br.com.casadocodigo.javacred.entidades.*;
 import br.com.casadocodigo.javacred.exceptions.JavacredApplicationException;
 import br.com.casadocodigo.javacred.exceptions.JavacredException;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import javax.annotation.Resource;
-import javax.ejb.EJBContext;
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.New;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.UserTransaction;
+import jakarta.annotation.Resource;
+import jakarta.ejb.EJBContext;
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.UserTransaction;
 
 import static org.mockito.Mockito.*;
 
 
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class EmprestimoBeanIntegrationTest {
 
 
@@ -44,9 +44,10 @@ public class EmprestimoBeanIntegrationTest {
                 .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsLibraries( //adiciona dependências via Maven
-                        Maven.resolver().resolve("org.mockito:mockito-core:3.3.3").withTransitivity().asFile()
-//                        Maven.resolver().resolve("org.mockito:mockito-all:1.10.19").withTransitivity().asFile()
-                );
+//                        Maven.resolver().resolve("org.mockito:mockito-core:5.8.0").withTransitivity().asFile()
+                        Maven.resolver().resolve("org.mockito:mockito-all:1.10.19").withTransitivity().asFile()
+                )
+                .addAsManifestResource(new StringAsset("Dependencies: jdk.unsupported\n" /* required by Mockito */), "MANIFEST.MF");
 
         System.out.println(archive.toString(true));
         return archive;
@@ -68,7 +69,7 @@ public class EmprestimoBeanIntegrationTest {
     @Inject
     UserTransaction utx;
 
-    @Before
+    @BeforeEach
     public void limparDados() throws Exception {
         utx.begin();
         em.createQuery("delete from Contrato ").executeUpdate();
@@ -79,26 +80,25 @@ public class EmprestimoBeanIntegrationTest {
     @Test
     public void cliente_nao_preferencial_deve_ter_segundo_emprestimo_rejeitado() {
 
-        Assert.assertEquals(0, contratoBean.listarTodos().size());
+        Assertions.assertEquals(0, contratoBean.listarTodos().size());
 
         Cliente cliente = new Cliente("Fulano", false);
         emprestimoBean.registrarEmprestimo(new Contrato(cliente));
         try{
             emprestimoBean.registrarEmprestimo(new Contrato(cliente));
-            Assert.fail("Não pode haver um segundo empréstimo");
+            Assertions.fail("Não pode haver um segundo empréstimo");
         }
         catch (JavacredApplicationException e){
 
         }
 
-        Assert.assertEquals("O segundo empréstimo deve ser negado por não ser cliente preferencial",
-                1, contratoBean.listarTodos().size());
+        Assertions.assertEquals(1, contratoBean.listarTodos().size(), "O segundo empréstimo deve ser negado por não ser cliente preferencial");
     }
 
     @Test
     public void cliente_nao_preferencial_deve_ter_segundo_emprestimo_rejeitado_com_mock() {
 
-        Assert.assertEquals(0, contratoBean.listarTodos().size());
+        Assertions.assertEquals(0, contratoBean.listarTodos().size());
 
 
         ContratoBean contratoBean = spy(this.contratoBean);
@@ -112,15 +112,14 @@ public class EmprestimoBeanIntegrationTest {
         Contrato contrato = new Contrato(cliente);
         try{
             emprestimoBean.registrarEmprestimo(contrato);
-            Assert.fail("Não pode haver nenhum empréstimo");
+            Assertions.fail("Não pode haver nenhum empréstimo");
         }
         catch (JavacredApplicationException e){
 
         }
 
 
-        Assert.assertEquals("O empréstimo deve ser negado por não ser cliente preferencial",
-                0, contratoBean.listarTodos().size());
+        Assertions.assertEquals(0, contratoBean.listarTodos().size(), "O empréstimo deve ser negado por não ser cliente preferencial");
 
         verify(contratoBean).salvar(contrato);
 
@@ -132,14 +131,13 @@ public class EmprestimoBeanIntegrationTest {
     @Test
     public void cliente_preferencial_deve_ter_segundo_emprestimo_aprovado() {
 
-        Assert.assertEquals(0, contratoBean.listarTodos().size());
+        Assertions.assertEquals(0, contratoBean.listarTodos().size());
 
         Cliente cliente = new Cliente("Beltrano", true);
         emprestimoBean.registrarEmprestimo(new Contrato(cliente));
         emprestimoBean.registrarEmprestimo(new Contrato(cliente));
 
-        Assert.assertEquals("Os dois empréstimos devem ser concedidos pois é cliente preferencial",
-                2, contratoBean.listarTodos().size());
+        Assertions.assertEquals(2, contratoBean.listarTodos().size(), "Os dois empréstimos devem ser concedidos pois é cliente preferencial");
 
     }
 }

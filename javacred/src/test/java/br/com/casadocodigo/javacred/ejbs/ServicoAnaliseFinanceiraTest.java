@@ -2,23 +2,23 @@ package br.com.casadocodigo.javacred.ejbs;
 
 import br.com.casadocodigo.javacred.entidades.RegistroEmprestimo;
 import br.com.casadocodigo.javacred.exceptions.JavacredApplicationException;
-import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class ServicoAnaliseFinanceiraTest {
 
 
-    @Test(expected = JavacredApplicationException.class)
+    @Test
     public void deve_lancar_excecao_se_ja_tem_emprestimo() throws Exception {
 
         List<RegistroEmprestimo> emprestimos = new ArrayList<>();
@@ -29,7 +29,10 @@ public class ServicoAnaliseFinanceiraTest {
 
         doReturn(emprestimos).when(saf).buscarEmprestimos(anyString(), any(Date.class));
 
-        saf.analisar("Fulano", 10_000.0);
+        assertThrows(JavacredApplicationException.class, () -> {
+            saf.analisar("Fulano", 10_000.0);
+        });
+
 
     }
 

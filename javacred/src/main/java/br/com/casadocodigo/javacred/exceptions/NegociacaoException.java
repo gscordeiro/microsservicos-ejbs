@@ -1,6 +1,6 @@
 package br.com.casadocodigo.javacred.exceptions;
 
-import javax.ejb.ApplicationException;
+import jakarta.ejb.ApplicationException;
 
 @ApplicationException(rollback = true)
 public class NegociacaoException extends RuntimeException {

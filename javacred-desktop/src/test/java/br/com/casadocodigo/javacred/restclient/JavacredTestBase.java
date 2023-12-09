@@ -3,10 +3,10 @@ package br.com.casadocodigo.javacred.restclient;
 
 import org.junit.jupiter.api.BeforeAll;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.client.WebTarget;
 import java.security.KeyStore;
 
 public abstract class JavacredTestBase {

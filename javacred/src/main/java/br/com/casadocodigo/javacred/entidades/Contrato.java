@@ -1,7 +1,7 @@
 package br.com.casadocodigo.javacred.entidades;
 
-import javax.persistence.*;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.persistence.*;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.time.YearMonth;
 import java.util.Date;
