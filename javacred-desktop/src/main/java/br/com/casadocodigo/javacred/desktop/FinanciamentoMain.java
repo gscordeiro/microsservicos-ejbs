@@ -2,8 +2,8 @@ package br.com.casadocodigo.javacred.desktop;
 
 import br.com.casadocodigo.javacred.ejbs.CalculadoraFinanciamentoRemota;
 
-import jakarta.naming.Context;
-import jakarta.naming.InitialContext;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 
 public class FinanciamentoMain {
 

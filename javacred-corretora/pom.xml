@@ -20,6 +20,7 @@
     <version.microprofile>6.0</version.microprofile>
     <version.wildfly.datasources.galleon.pack>6.0.0.Final</version.wildfly.datasources.galleon.pack>
     <version.resteasy>6.2.6.Final</version.resteasy>
+    <version.junit>5.10.1</version.junit>
   </properties>
 
   <dependencies>
@@ -53,7 +54,7 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <version>5.10.1</version>
+      <version>${version.junit}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -97,7 +98,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M5</version>
+        <version>3.2.2</version>
       </plugin>
     </plugins>
   </build>
