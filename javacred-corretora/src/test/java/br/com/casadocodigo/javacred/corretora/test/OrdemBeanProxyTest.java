@@ -22,7 +22,7 @@ public class OrdemBeanProxyTest {
     @BeforeEach
     public void configuraProxy(){
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target("http://localhost:8080");
+        WebTarget target = client.target("http://localhost:8081");
         ResteasyWebTarget rtarget = (ResteasyWebTarget) target;
 
         ordemBean = rtarget.proxy(OrdemBeanProxy.class);
@@ -59,7 +59,7 @@ public class OrdemBeanProxyTest {
     public void testaPostCondicionalComProxy(){
 
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target("http://localhost:8080");
+        WebTarget target = client.target("http://localhost:8081");
         ResteasyWebTarget rtarget = (ResteasyWebTarget) target;
 
         OrdemBeanProxy ordemBean = rtarget.proxy(OrdemBeanProxy.class);

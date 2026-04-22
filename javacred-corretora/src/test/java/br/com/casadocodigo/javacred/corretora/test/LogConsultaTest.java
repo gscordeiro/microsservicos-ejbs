@@ -28,7 +28,7 @@ public class LogConsultaTest {
         Client client = ClientBuilder.newClient();
         client.register(new BrowserCacheFeature());
 
-        WebTarget javacred = client.target("http://localhost:8080");
+        WebTarget javacred = client.target("http://localhost:8081");
 
         WebTarget cotacaoBean = javacred.path("cotacao/v2");
         Response response = null;
@@ -79,7 +79,7 @@ public class LogConsultaTest {
         .param("quantidade", "200");
 
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target("http://localhost:8080/cotacao/v2");
+        WebTarget target = client.target("http://localhost:8081/cotacao/v2");
         Response response = target.
                 request(MediaType.APPLICATION_FORM_URLENCODED)
                 .accept(MediaType.APPLICATION_JSON)
@@ -95,7 +95,7 @@ public class LogConsultaTest {
         Consulta consulta = new Consulta("PETR4", 100.0);
 
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target("http://localhost:8080/cotacao/v2");
+        WebTarget target = client.target("http://localhost:8081/cotacao/v2");
         Future<LogConsulta> response = target.
                 request(MediaType.APPLICATION_JSON)
                 .buildPost(Entity.json(consulta)).submit(LogConsulta.class);

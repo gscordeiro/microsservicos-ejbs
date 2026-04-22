@@ -25,7 +25,7 @@ public class OrdemBeanTest {
 
         client.register(new BrowserCacheFeature());
 
-        WebTarget javacred = client.target("http://localhost:8080");
+        WebTarget javacred = client.target("http://localhost:8081");
 
         WebTarget ordemBean = javacred.path("ordem");
         Response response = null;
@@ -58,7 +58,7 @@ public class OrdemBeanTest {
 
         OrdemTO novaOrdem  = new OrdemTO(OrdemTO.Tipo.COMPRA, "PETR4", 100, 14.0, "test");
 
-        WebTarget ordemBean = client.target("http://localhost:8080/ordem");
+        WebTarget ordemBean = client.target("http://localhost:8081/ordem");
         Response response = ordemBean.request()
                 .post(Entity.json(novaOrdem));
 
@@ -87,7 +87,7 @@ public class OrdemBeanTest {
         Client client = ClientBuilder.newClient();
         client.register(new BrowserCacheFeature());
 
-        WebTarget javacred = client.target("http://localhost:8080");
+        WebTarget javacred = client.target("http://localhost:8081");
 
         WebTarget ordemBean = javacred.path("ordem");
 

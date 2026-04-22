@@ -14,7 +14,7 @@ Projeto de estudo e referência de **Java EE / Jakarta EE** demonstrando EJBs, J
 │   │    javacred     │   │  javacred-corretora  │   │
 │   │  (WAR · EJB)    │   │   (WAR · EJB Lite)   │   │
 │   │  WildFly 30     │   │   WildFly 30         │   │
-│   │  Porta :8080    │   │   Porta :8080        │   │
+│   │  Porta :8080    │   │   Porta :8081        │   │
 │   └────────┬────────┘   └──────────────────────┘   │
 │            │ Remote EJB / REST                     │
 │   ┌────────▼────────┐                              │
@@ -452,7 +452,7 @@ cd javacred
 ```bash
 cd javacred-corretora
 ./mvnw wildfly-jar:dev-watch
-# Disponível em http://localhost:8080
+# Disponível em http://localhost:8081
 ```
 
 > Windows: `mvnw.cmd wildfly-jar:dev-watch`

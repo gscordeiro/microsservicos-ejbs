@@ -93,6 +93,10 @@
           <excluded-layers>
             <layer>deployment-scanner</layer>
           </excluded-layers>
+          <jvmArguments>
+            <jvmArgument>-Djboss.socket.binding.port-offset=1</jvmArgument>
+          </jvmArguments>
+          <port>9991</port>
         </configuration>
       </plugin>
       <plugin>
