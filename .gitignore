@@ -1,0 +1,21 @@
+# Maven
+target/
+**/target/
+
+# Maven Wrapper cache
+.mvn/wrapper/maven-wrapper.jar
+
+# IDEs
+.idea/
+*.iml
+*.iws
+*.ipr
+.classpath
+.project
+.settings/
+*.launch
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
