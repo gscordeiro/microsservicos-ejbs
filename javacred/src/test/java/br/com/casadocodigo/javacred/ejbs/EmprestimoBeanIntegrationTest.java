@@ -40,8 +40,7 @@ public class EmprestimoBeanIntegrationTest {
                 .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsLibraries( //adiciona dependências via Maven
-//                        Maven.resolver().resolve("org.mockito:mockito-core:5.8.0").withTransitivity().asFile()
-                        Maven.resolver().resolve("org.mockito:mockito-all:1.10.19").withTransitivity().asFile()
+                        Maven.resolver().resolve("org.mockito:mockito-core:5.8.0").withTransitivity().asFile()
                 )
                 .addAsManifestResource(new StringAsset("Dependencies: jdk.unsupported\n" /* required by Mockito */), "MANIFEST.MF");
 
