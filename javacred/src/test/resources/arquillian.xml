@@ -3,12 +3,19 @@
             xsi:schemaLocation="
         http://jboss.org/schema/arquillian
         http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
-    <container qualifier="wildfly" default="true">
+
+    <defaultProtocol type="Servlet 5.0">
+        <property name="host">${wildfly.host}</property>
+        <property name="port">${wildfly.http.port}</property>
+    </defaultProtocol>
+
+    <container qualifier="wildfly-remote" default="true">
         <configuration>
-<!--            <property name="java.util.logging.manager">org.jboss.logmanager.LogManager</property>-->
-            <property name="jbossHome">/Users/gscordeiro/Dev/servidores/wildfly-30.0.1.Final</property>
-            <property name="modulePath">/Users/gscordeiro/Dev/servidores/wildfly-30.0.1.Final/modules</property>
-<!--            <property name="serverConfig">standalone-full.xml</property>-->
+            <property name="managementAddress">${wildfly.host}</property>
+            <property name="managementPort">${wildfly.management.port}</property>
+            <property name="username">admin</property>
+            <property name="password">admin</property>
+            <property name="protocol">http</property>
         </configuration>
     </container>
 </arquillian>

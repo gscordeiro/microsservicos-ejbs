@@ -30,6 +30,11 @@
         <version.mokito.all>1.10.19</version.mokito.all>
         <version.primefaces>13.0.0</version.primefaces>
         <version.jboss.ejb3>2.4.0.Final</version.jboss.ejb3>
+        <version.weld.junit5>4.0.3.Final</version.weld.junit5>
+        <version.testcontainers>1.20.4</version.testcontainers>
+        <!-- WildFly 30.0.1.Final does not ship a JDK21 image on quay.io; using the
+             newest Jakarta EE 10 release that does. -->
+        <version.wildfly.image>33.0.2.Final-jdk21</version.wildfly.image>
     </properties>
 
     <dependencyManagement>
@@ -86,6 +91,12 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.2</version>
+                <configuration>
+                    <environmentVariables>
+                        <!-- Ryuk requires bind-mounting docker.sock, which fails on Colima/macOS -->
+                        <TESTCONTAINERS_RYUK_DISABLED>true</TESTCONTAINERS_RYUK_DISABLED>
+                    </environmentVariables>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -147,6 +158,13 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-junit5</artifactId>
+            <version>${version.weld.junit5}</version>
+            <scope>test</scope>
+        </dependency>
+
         <!--
         <dependency>
             <groupId>org.mockito</groupId>
@@ -177,8 +195,22 @@
 
         <dependency>
             <groupId>org.wildfly.arquillian</groupId>
-            <artifactId>wildfly-arquillian-container-embedded</artifactId>
+            <artifactId>wildfly-arquillian-container-remote</artifactId>
             <version>${version.arquillian.container}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${version.testcontainers}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${version.testcontainers}</version>
             <scope>test</scope>
         </dependency>
 

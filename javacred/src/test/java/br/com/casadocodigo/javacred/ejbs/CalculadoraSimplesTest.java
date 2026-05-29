@@ -1,32 +1,19 @@
 package br.com.casadocodigo.javacred.ejbs;
 
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit5.ArquillianExtension;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.junit5.EnableWeld;
+import org.jboss.weld.junit5.WeldInitiator;
+import org.jboss.weld.junit5.WeldSetup;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import jakarta.inject.Inject;
 
-@ExtendWith(ArquillianExtension.class)
+@EnableWeld
 public class CalculadoraSimplesTest {
 
-    @Deployment
-    public static Archive createDeployment() {
-        Archive jar = ShrinkWrap.create(JavaArchive.class)
-                .addClass(CalculadoraSimplesBean.class);
-//                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
-        System.out.println(jar.toString(true));
-        return jar;
-    }
-
-
+    @WeldSetup
+    public WeldInitiator weld = WeldInitiator.from(CalculadoraSimplesBean.class).build();
 
     @Inject
     CalculadoraSimplesBean calculadora;

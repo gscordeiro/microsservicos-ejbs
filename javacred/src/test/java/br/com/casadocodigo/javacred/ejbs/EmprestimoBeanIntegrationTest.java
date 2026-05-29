@@ -17,9 +17,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import jakarta.annotation.Resource;
-import jakarta.ejb.EJBContext;
-import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -28,9 +25,8 @@ import jakarta.transaction.UserTransaction;
 import static org.mockito.Mockito.*;
 
 
-@ExtendWith(ArquillianExtension.class)
+@ExtendWith({WildFlyTestcontainerExtension.class, ArquillianExtension.class})
 public class EmprestimoBeanIntegrationTest {
-
 
     @Deployment
     public static Archive createDeployment() {
