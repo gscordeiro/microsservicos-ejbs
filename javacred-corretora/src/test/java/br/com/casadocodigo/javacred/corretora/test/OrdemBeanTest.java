@@ -2,7 +2,6 @@ package br.com.casadocodigo.javacred.corretora.test;
 
 import br.com.casadocodigo.javacred.corretora.test.bean.OrdemTO;
 import org.jboss.resteasy.client.jaxrs.cache.BrowserCacheFeature;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 
@@ -16,8 +15,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.Date;
 
-@Disabled
-public class OrdemBeanTest {
+public class OrdemBeanTest extends CorretoraTestBase {
 
     @Test
     public void testarGetCondicional() throws InterruptedException {
@@ -25,7 +23,7 @@ public class OrdemBeanTest {
 
         client.register(new BrowserCacheFeature());
 
-        WebTarget javacred = client.target("http://localhost:8081");
+        WebTarget javacred = client.target(corretoraBaseUri());
 
         WebTarget ordemBean = javacred.path("ordem");
         Response response = null;
@@ -58,7 +56,7 @@ public class OrdemBeanTest {
 
         OrdemTO novaOrdem  = new OrdemTO(OrdemTO.Tipo.COMPRA, "PETR4", 100, 14.0, "test");
 
-        WebTarget ordemBean = client.target("http://localhost:8081/ordem");
+        WebTarget ordemBean = client.target(corretoraBaseUri() + "/ordem");
         Response response = ordemBean.request()
                 .post(Entity.json(novaOrdem));
 
@@ -87,7 +85,7 @@ public class OrdemBeanTest {
         Client client = ClientBuilder.newClient();
         client.register(new BrowserCacheFeature());
 
-        WebTarget javacred = client.target("http://localhost:8081");
+        WebTarget javacred = client.target(corretoraBaseUri());
 
         WebTarget ordemBean = javacred.path("ordem");
 

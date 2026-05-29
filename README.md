@@ -1,6 +1,6 @@
 # Microsserviços com EJBs — Casa do Código
 
-Projeto de estudo e referência de **Java EE / Jakarta EE** demonstrando EJBs, JPA, JAX-RS, JSF, transações, processamento assíncrono e comunicação entre módulos. Construído com **Java 21**, **Jakarta EE 10** e **WildFly 30**, é composto por três módulos Maven independentes.
+Projeto de estudo e referência de **Java EE / Jakarta EE** demonstrando EJBs, JPA, JAX-RS, JSF, transações, processamento assíncrono e comunicação entre módulos. Construído com **Java 21**, **Jakarta EE 10** e **WildFly 30**, é um build Maven multi-módulo (reactor) com um POM pai agregando três módulos de aplicação e um módulo de suporte a testes.
 
 ---
 
@@ -24,11 +24,12 @@ Projeto de estudo e referência de **Java EE / Jakarta EE** demonstrando EJBs, J
 └────────────────────────────────────────────────────┘
 ```
 
-| Módulo | Tipo | Descrição resumida |
-|--------|------|--------------------|
-| [javacred](#javacred) | WAR | Sistema de crédito/empréstimos com JSF, EJBs completos, REST, SSE e JPA |
-| [javacred-corretora](#javacred-corretora) | WAR | API REST de corretora com cotações, ordens e HTTP caching (EJB Lite) |
-| [javacred-desktop](#javacred-desktop) | JAR | Cliente desktop que consome EJBs remotos e endpoints REST do javacred |
+| Módulo                                         | Tipo | Descrição resumida |
+|------------------------------------------------|------|--------------------|
+| [javacred](#javacred)                          | WAR | Sistema de crédito/empréstimos com JSF, EJBs completos, REST, SSE e JPA |
+| [javacred-corretora](#javacred-corretora)      | WAR | API REST de corretora com cotações, ordens e HTTP caching (EJB Lite) |
+| [javacred-desktop](#javacred-desktop)          | JAR | Cliente desktop que consome EJBs remotos e endpoints REST do javacred |
+| javacred-test-support | JAR | Infra de testes compartilhada — `WildFlyContainer` (Testcontainers) que sobe o WildFly e faz deploy dos WARs nos testes de integração |
 
 ### Stack Tecnológico
 
@@ -41,7 +42,7 @@ Projeto de estudo e referência de **Java EE / Jakarta EE** demonstrando EJBs, J
 | REST | JAX-RS + RESTEasy 6.2.6 · AsyncResponse · SSE · ETags |
 | Web UI | JSF 2.3 + PrimeFaces 13.0.0 |
 | Serialização | Jackson 2.16 |
-| Testes | JUnit 5 · Arquillian · Mockito |
+| Testes | JUnit 5 · Arquillian · Mockito · Testcontainers (WildFly em Docker) |
 
 ---
 
@@ -435,7 +436,8 @@ source.register(
 ### Pré-requisitos
 
 - Java 21+
-- Maven não é necessário — cada módulo inclui o **Maven Wrapper** (`mvnw`/`mvnw.cmd`), que baixa automaticamente a versão correta do Maven na primeira execução
+- Maven não é necessário — o projeto inclui o **Maven Wrapper** (`mvnw`/`mvnw.cmd`) na raiz e em cada módulo, que baixa automaticamente a versão correta do Maven na primeira execução
+- **Docker** (apenas para os testes de integração) — os testes sobem o WildFly automaticamente via [Testcontainers](https://testcontainers.com/); não é preciso baixar ou iniciar o servidor manualmente
 
 ### Subindo o javacred
 
@@ -468,16 +470,25 @@ cd javacred-desktop
 
 > Windows: `mvnw.cmd exec:java -Dexec.mainClass="br.com.casadocodigo.javacred.desktop.FinanciamentoMain"`
 
-### Executando os testes de integração REST
+### Executando os testes
 
-Com o `javacred` rodando:
+Os testes de integração sobem o WildFly em container (Testcontainers) e fazem o deploy do WAR automaticamente — **não é preciso iniciar nenhum servidor antes**. Basta ter o Docker em execução.
+
+A partir da raiz do projeto (build multi-módulo, em paralelo por padrão via `.mvn/maven.config`):
 
 ```bash
-cd javacred-desktop
-./mvnw test
+./mvnw verify
 ```
 
-> Windows: `mvnw.cmd test`
+> Windows: `mvnw.cmd verify`
+
+Para rodar os testes de um módulo específico (e suas dependências):
+
+```bash
+./mvnw -pl javacred-desktop -am verify
+```
+
+> Os testes de integração rodam na fase `verify` (via `maven-failsafe-plugin`), depois do empacotamento do WAR. Por isso use `verify`, não `test`.
 
 ---
 

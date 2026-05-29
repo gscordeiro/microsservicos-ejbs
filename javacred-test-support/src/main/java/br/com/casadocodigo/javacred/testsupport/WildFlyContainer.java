@@ -8,8 +8,6 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.MountableFile;
 
 import java.net.URI;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * WildFly em Docker via Testcontainers, pronto para testes de integração.
@@ -35,12 +33,12 @@ public class WildFlyContainer extends GenericContainer<WildFlyContainer>
     private static final String DEFAULT_IMAGE = "quay.io/wildfly/wildfly:33.0.2.Final-jdk21";
     private static final int HTTP_PORT = 8080;
     private static final int MANAGEMENT_PORT = 9990;
-    private static final String DEPLOYMENTS_DIR = "/opt/server/standalone/deployments/";
+    private static final String DEPLOYMENTS_DIR = "/opt/jboss/wildfly/standalone/deployments/";
 
-    private final Map<String, MountableFile> deployments = new LinkedHashMap<>();
     private String adminUser;
     private String adminPassword;
     private String systemPropertyPrefix = "wildfly";
+    private boolean shutdownHookRegistered;
 
     public WildFlyContainer() {
         this(DEFAULT_IMAGE);
@@ -49,12 +47,14 @@ public class WildFlyContainer extends GenericContainer<WildFlyContainer>
     public WildFlyContainer(String image) {
         super(image);
         withExposedPorts(HTTP_PORT, MANAGEMENT_PORT);
-        waitingFor(Wait.forLogMessage(".*WildFly.*started in.*\\n", 1));
+        // Aceita tanto "started in" quanto "started (with errors) in" — pois
+        // deploys parciais ainda contam como server up para o teste reagir.
+        waitingFor(Wait.forLogMessage(".*WildFly.*started.*in.*\\n", 1));
     }
 
     /** Copia o WAR para {@code standalone/deployments/} antes do start. */
     public WildFlyContainer withDeployment(String warName, MountableFile war) {
-        deployments.put(warName, war);
+        withCopyFileToContainer(war, DEPLOYMENTS_DIR + warName);
         return self();
     }
 
@@ -81,16 +81,21 @@ public class WildFlyContainer extends GenericContainer<WildFlyContainer>
 
     @Override
     protected void configure() {
-        deployments.forEach((name, file) ->
-                withCopyFileToContainer(file, DEPLOYMENTS_DIR + name));
+        // Forçamos user.home=/tmp pois deployments podem ter datasources com
+        // paths relativos a "~" (ex.: H2 file mode), e o user "jboss" tem
+        // /opt/jboss como home no /etc/passwd — mas não tem permissão de
+        // escrita lá. /tmp é writable. Setamos via JAVA_OPTS porque a JVM
+        // resolve user.home pelo passwd, ignorando $HOME.
+        withEnv("JAVA_OPTS", "-Duser.home=/tmp");
+
+        String standalone = "$JBOSS_HOME/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0";
 
         if (adminUser != null) {
             withCommand("sh", "-c",
                     "$JBOSS_HOME/bin/add-user.sh " + adminUser + " " + adminPassword + " --silent && "
-                            + "$JBOSS_HOME/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0");
+                            + standalone);
         } else {
-            withCommand("sh", "-c",
-                    "$JBOSS_HOME/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0");
+            withCommand("sh", "-c", standalone);
         }
     }
 
@@ -123,6 +128,10 @@ public class WildFlyContainer extends GenericContainer<WildFlyContainer>
         System.setProperty(systemPropertyPrefix + ".host", getHost());
         System.setProperty(systemPropertyPrefix + ".http.port", String.valueOf(getHttpPort()));
         System.setProperty(systemPropertyPrefix + ".management.port", String.valueOf(getManagementPort()));
+        if (!shutdownHookRegistered) {
+            Runtime.getRuntime().addShutdownHook(new Thread(super::stop, "wildfly-stop"));
+            shutdownHookRegistered = true;
+        }
     }
 
     @Override
@@ -132,6 +141,7 @@ public class WildFlyContainer extends GenericContainer<WildFlyContainer>
 
     @Override
     public void afterAll(ExtensionContext context) {
-        stop();
+        // Singleton: o container fica vivo entre test classes na mesma JVM
+        // e é parado pelo shutdown hook registrado em start().
     }
 }

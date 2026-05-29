@@ -3,7 +3,6 @@ package br.com.casadocodigo.javacred.corretora.test;
 import br.com.casadocodigo.javacred.corretora.entity.LogConsulta;
 import br.com.casadocodigo.javacred.corretora.cliente.Consulta;
 import org.jboss.resteasy.client.jaxrs.cache.BrowserCacheFeature;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 
@@ -20,15 +19,14 @@ import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-@Disabled
-public class LogConsultaTest {
+public class LogConsultaTest extends CorretoraTestBase {
 
     @Test
     public void testaCache() throws ExecutionException, InterruptedException {
         Client client = ClientBuilder.newClient();
         client.register(new BrowserCacheFeature());
 
-        WebTarget javacred = client.target("http://localhost:8081");
+        WebTarget javacred = client.target(corretoraBaseUri());
 
         WebTarget cotacaoBean = javacred.path("cotacao/v2");
         Response response = null;
@@ -79,7 +77,7 @@ public class LogConsultaTest {
         .param("quantidade", "200");
 
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target("http://localhost:8081/cotacao/v2");
+        WebTarget target = client.target(corretoraBaseUri() + "/cotacao/v2");
         Response response = target.
                 request(MediaType.APPLICATION_FORM_URLENCODED)
                 .accept(MediaType.APPLICATION_JSON)
@@ -95,7 +93,7 @@ public class LogConsultaTest {
         Consulta consulta = new Consulta("PETR4", 100.0);
 
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target("http://localhost:8081/cotacao/v2");
+        WebTarget target = client.target(corretoraBaseUri() + "/cotacao/v2");
         Future<LogConsulta> response = target.
                 request(MediaType.APPLICATION_JSON)
                 .buildPost(Entity.json(consulta)).submit(LogConsulta.class);

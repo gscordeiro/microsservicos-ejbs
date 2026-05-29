@@ -4,7 +4,6 @@ import br.com.casadocodigo.javacred.corretora.test.bean.OrdemTO;
 import br.com.casadocodigo.javacred.corretora.test.proxy.OrdemBeanProxy;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 
@@ -14,15 +13,14 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.EntityTag;
 import jakarta.ws.rs.core.Response;
 
-@Disabled
-public class OrdemBeanProxyTest {
+public class OrdemBeanProxyTest extends CorretoraTestBase {
 
     private OrdemBeanProxy ordemBean;
 
     @BeforeEach
     public void configuraProxy(){
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target("http://localhost:8081");
+        WebTarget target = client.target(corretoraBaseUri());
         ResteasyWebTarget rtarget = (ResteasyWebTarget) target;
 
         ordemBean = rtarget.proxy(OrdemBeanProxy.class);
@@ -59,7 +57,7 @@ public class OrdemBeanProxyTest {
     public void testaPostCondicionalComProxy(){
 
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target("http://localhost:8081");
+        WebTarget target = client.target(corretoraBaseUri());
         ResteasyWebTarget rtarget = (ResteasyWebTarget) target;
 
         OrdemBeanProxy ordemBean = rtarget.proxy(OrdemBeanProxy.class);

@@ -8,12 +8,12 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.Response;
 
-public class SimuladorFinanciamentoTest {
+public class SimuladorFinanciamentoTest extends JavacredTestBase {
 
     @Test
     public void testaSimulacaoFinanciamento(){
         Client client = ClientBuilder.newBuilder().build();
-        WebTarget target = client.target(JavacredTestBase.JAVACRED_BASE_URI + "/financiamento/"
+        WebTarget target = client.target(javacredBaseUri() + "/financiamento/"
                 + "simular?valor=12000&meses=10");
         Response response = target.request().get();
         Double resultado = response.readEntity(Double.class);
@@ -25,7 +25,7 @@ public class SimuladorFinanciamentoTest {
     @Test
     public void testaSimulacaoFinanciamentoComParametros(){
         Client client = ClientBuilder.newBuilder().build();
-        WebTarget javacred = client.target(JavacredTestBase.JAVACRED_BASE_URI + "/");
+        WebTarget javacred = client.target(javacredBaseUri() + "/");
 
         WebTarget simuladorFinanciamento = javacred.path("financiamento");
 

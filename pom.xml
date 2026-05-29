@@ -46,6 +46,7 @@
 
         <version.maven.surefire>3.2.2</version.maven.surefire>
         <version.maven.dependency.plugin>3.6.1</version.maven.dependency.plugin>
+        <version.maven.war.plugin>3.4.0</version.maven.war.plugin>
     </properties>
 
     <dependencyManagement>
@@ -117,11 +118,32 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${version.maven.surefire}</version>
+                    <configuration>
+                        <environmentVariables>
+                            <!-- Ryuk requires bind-mounting docker.sock, which fails on Colima/macOS -->
+                            <TESTCONTAINERS_RYUK_DISABLED>true</TESTCONTAINERS_RYUK_DISABLED>
+                        </environmentVariables>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>${version.maven.surefire}</version>
+                    <configuration>
+                        <environmentVariables>
+                            <TESTCONTAINERS_RYUK_DISABLED>true</TESTCONTAINERS_RYUK_DISABLED>
+                        </environmentVariables>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>${version.maven.dependency.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>${version.maven.war.plugin}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.wildfly.plugins</groupId>
