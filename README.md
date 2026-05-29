@@ -1,6 +1,6 @@
 # Microsserviços com EJBs — Casa do Código
 
-Projeto de estudo e referência de **Java EE / Jakarta EE** demonstrando EJBs, JPA, JAX-RS, JSF, transações, processamento assíncrono e comunicação entre módulos. Construído com **Java 21**, **Jakarta EE 10** e **WildFly 33**, é um build Maven multi-módulo (reactor) com um POM pai agregando três módulos de aplicação e um módulo de suporte a testes.
+Projeto de estudo e referência de **Java EE / Jakarta EE** demonstrando EJBs, JPA, JAX-RS, JSF, transações, processamento assíncrono e comunicação entre módulos. Construído com **Java 21**, **Jakarta EE 11** e **WildFly 40**, é um build Maven multi-módulo (reactor) com um POM pai agregando três módulos de aplicação e um módulo de suporte a testes.
 
 ---
 
@@ -13,7 +13,7 @@ Projeto de estudo e referência de **Java EE / Jakarta EE** demonstrando EJBs, J
 │   ┌─────────────────┐   ┌──────────────────────┐   │
 │   │    javacred     │   │  javacred-corretora  │   │
 │   │  (WAR · EJB)    │   │   (WAR · EJB Lite)   │   │
-│   │  WildFly 33     │   │   WildFly 33         │   │
+│   │  WildFly 40     │   │   WildFly 40         │   │
 │   │  Porta :8080    │   │   Porta :8081        │   │
 │   └────────┬────────┘   └──────────────────────┘   │
 │            │ Remote EJB / REST                     │
@@ -35,13 +35,13 @@ Projeto de estudo e referência de **Java EE / Jakarta EE** demonstrando EJBs, J
 
 | Camada | Tecnologia |
 |--------|-----------|
-| Servidor | WildFly 33.0.2.Final em **todos** os ambientes — runtime via Bootable JAR (`wildfly-jar-maven-plugin`) e testes na imagem Docker `quay.io/wildfly/wildfly:33.0.2.Final-jdk21` (Testcontainers). Versão única definida em `version.wildfly` no POM pai |
-| Plataforma | Jakarta EE 10 · Java 21 |
+| Servidor | WildFly 40.0.0.Final em **todos** os ambientes — runtime via Bootable JAR (`wildfly-jar-maven-plugin`) e testes na imagem Docker `quay.io/wildfly/wildfly:40.0.0.Final-jdk21` (Testcontainers). Versão única definida em `version.wildfly` no POM pai |
+| Plataforma | Jakarta EE 11 · Java 21 |
 | EJB | Stateless, Stateful, Singleton, @Asynchronous, Timer |
-| Persistência | JPA + Hibernate · H2 (file-based) |
-| REST | JAX-RS + RESTEasy 6.2.6 · AsyncResponse · SSE · ETags |
-| Web UI | JSF 2.3 + PrimeFaces 13.0.0 |
-| Serialização | Jackson 2.16 |
+| Persistência | JPA (Jakarta Persistence 3.2) + Hibernate ORM 7 · H2 (file-based) |
+| REST | JAX-RS 4.0 + RESTEasy 7.0.2 · AsyncResponse · SSE · ETags |
+| Web UI | Jakarta Faces 4.1 (Mojarra) + PrimeFaces 15 |
+| Serialização | Jackson 2.21 |
 | Testes | JUnit 5 · Arquillian · Mockito · Testcontainers (WildFly em Docker) |
 
 ---
@@ -66,8 +66,8 @@ Sistema de gerenciamento de crédito e empréstimos. Demonstra o uso completo de
 |------|-------|
 | Packaging | WAR |
 | Java | 21 |
-| Jakarta EE | 10.0.0 |
-| Servidor | WildFly 33.0.2.Final (Bootable JAR; testes na imagem `…:33.0.2.Final-jdk21`) |
+| Jakarta EE | 11.0.0 |
+| Servidor | WildFly 40.0.0.Final (Bootable JAR; testes na imagem `…:40.0.0.Final-jdk21`) |
 | Context Root | `/javacred` |
 | Banco de dados | H2 file · `~/temp/javacred_db` (modo `AUTO_SERVER`) |
 | JNDI datasource | `java:/datasources/JavacredDS` |
@@ -228,8 +228,8 @@ API REST de uma corretora de valores. Demonstra EJB Lite, versionamento de API, 
 |------|-------|
 | Packaging | WAR |
 | Java | 21 |
-| Jakarta EE | 10.0.0 (EJB Lite) |
-| Servidor | WildFly 33.0.2.Final (Bootable JAR; testes na imagem `…:33.0.2.Final-jdk21`) |
+| Jakarta EE | 11.0.0 (EJB Lite) |
+| Servidor | WildFly 40.0.0.Final (Bootable JAR; testes na imagem `…:40.0.0.Final-jdk21`) |
 | Banco de dados | H2 file · `~/temp/javacred_corretora_db` (modo `AUTO_SERVER`) |
 | JNDI datasource | `java:/datasources/JavacredCorretoraDS` |
 
@@ -439,7 +439,7 @@ source.register(
 
 - Java 21+
 - Maven não é necessário — o projeto inclui o **Maven Wrapper** (`mvnw`/`mvnw.cmd`) **na raiz**, que baixa automaticamente a versão correta do Maven na primeira execução. Todos os comandos são executados a partir da raiz (build multi-módulo); use `-pl <módulo>` para mirar um módulo específico.
-- **Docker** (apenas para os testes de integração) — os testes sobem o WildFly automaticamente via [Testcontainers](https://testcontainers.com/) (imagem `quay.io/wildfly/wildfly:33.0.2.Final-jdk21`); não é preciso baixar ou iniciar o servidor manualmente
+- **Docker** (apenas para os testes de integração) — os testes sobem o WildFly automaticamente via [Testcontainers](https://testcontainers.com/) (imagem `quay.io/wildfly/wildfly:40.0.0.Final-jdk21`); não é preciso baixar ou iniciar o servidor manualmente
 
 > Em todos os comandos, no Windows troque `./mvnw` por `mvnw.cmd`.
 

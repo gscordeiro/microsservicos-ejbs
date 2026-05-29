@@ -93,7 +93,6 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jsapi</artifactId>
-            <version>${version.resteasy}</version>
             <scope>provided</scope>
         </dependency>
 

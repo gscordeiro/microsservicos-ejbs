@@ -36,7 +36,7 @@ public class WildFlyContainer extends GenericContainer<WildFlyContainer>
      * property {@code wildfly.image}, alimentada por {@code version.wildfly.image}
      * no POM — que é a fonte única da verdade. Mantenha os dois alinhados.
      */
-    private static final String DEFAULT_IMAGE = "quay.io/wildfly/wildfly:33.0.2.Final-jdk21";
+    private static final String DEFAULT_IMAGE = "quay.io/wildfly/wildfly:40.0.0.Final-jdk21";
     private static final int HTTP_PORT = 8080;
     private static final int MANAGEMENT_PORT = 9990;
     private static final String DEPLOYMENTS_DIR = "/opt/jboss/wildfly/standalone/deployments/";
