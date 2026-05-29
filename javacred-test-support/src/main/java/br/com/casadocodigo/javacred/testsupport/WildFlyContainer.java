@@ -30,6 +30,12 @@ import java.net.URI;
 public class WildFlyContainer extends GenericContainer<WildFlyContainer>
         implements BeforeAllCallback, AfterAllCallback {
 
+    /**
+     * Imagem default. Serve apenas de fallback para execuções fora do Maven
+     * (ex.: rodar um teste direto pela IDE). No build, o valor vem da system
+     * property {@code wildfly.image}, alimentada por {@code version.wildfly.image}
+     * no POM — que é a fonte única da verdade. Mantenha os dois alinhados.
+     */
     private static final String DEFAULT_IMAGE = "quay.io/wildfly/wildfly:33.0.2.Final-jdk21";
     private static final int HTTP_PORT = 8080;
     private static final int MANAGEMENT_PORT = 9990;
@@ -41,7 +47,7 @@ public class WildFlyContainer extends GenericContainer<WildFlyContainer>
     private boolean shutdownHookRegistered;
 
     public WildFlyContainer() {
-        this(DEFAULT_IMAGE);
+        this(System.getProperty("wildfly.image", DEFAULT_IMAGE));
     }
 
     public WildFlyContainer(String image) {

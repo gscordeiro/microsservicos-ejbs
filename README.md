@@ -1,6 +1,6 @@
 # Microsserviços com EJBs — Casa do Código
 
-Projeto de estudo e referência de **Java EE / Jakarta EE** demonstrando EJBs, JPA, JAX-RS, JSF, transações, processamento assíncrono e comunicação entre módulos. Construído com **Java 21**, **Jakarta EE 10** e **WildFly 30**, é um build Maven multi-módulo (reactor) com um POM pai agregando três módulos de aplicação e um módulo de suporte a testes.
+Projeto de estudo e referência de **Java EE / Jakarta EE** demonstrando EJBs, JPA, JAX-RS, JSF, transações, processamento assíncrono e comunicação entre módulos. Construído com **Java 21**, **Jakarta EE 10** e **WildFly 33**, é um build Maven multi-módulo (reactor) com um POM pai agregando três módulos de aplicação e um módulo de suporte a testes.
 
 ---
 
@@ -13,7 +13,7 @@ Projeto de estudo e referência de **Java EE / Jakarta EE** demonstrando EJBs, J
 │   ┌─────────────────┐   ┌──────────────────────┐   │
 │   │    javacred     │   │  javacred-corretora  │   │
 │   │  (WAR · EJB)    │   │   (WAR · EJB Lite)   │   │
-│   │  WildFly 30     │   │   WildFly 30         │   │
+│   │  WildFly 33     │   │   WildFly 33         │   │
 │   │  Porta :8080    │   │   Porta :8081        │   │
 │   └────────┬────────┘   └──────────────────────┘   │
 │            │ Remote EJB / REST                     │
@@ -35,7 +35,7 @@ Projeto de estudo e referência de **Java EE / Jakarta EE** demonstrando EJBs, J
 
 | Camada | Tecnologia |
 |--------|-----------|
-| Servidor | WildFly 30.0.1 (provisionado via `wildfly-jar-maven-plugin`) |
+| Servidor | WildFly 33.0.2.Final em **todos** os ambientes — runtime via Bootable JAR (`wildfly-jar-maven-plugin`) e testes na imagem Docker `quay.io/wildfly/wildfly:33.0.2.Final-jdk21` (Testcontainers). Versão única definida em `version.wildfly` no POM pai |
 | Plataforma | Jakarta EE 10 · Java 21 |
 | EJB | Stateless, Stateful, Singleton, @Asynchronous, Timer |
 | Persistência | JPA + Hibernate · H2 (file-based) |
@@ -67,10 +67,12 @@ Sistema de gerenciamento de crédito e empréstimos. Demonstra o uso completo de
 | Packaging | WAR |
 | Java | 21 |
 | Jakarta EE | 10.0.0 |
-| Servidor | WildFly 30.0.1 (Bootable JAR) |
+| Servidor | WildFly 33.0.2.Final (Bootable JAR; testes na imagem `…:33.0.2.Final-jdk21`) |
 | Context Root | `/javacred` |
-| Banco de dados | H2 file · `~/tmp/javacred_db` |
+| Banco de dados | H2 file · `~/temp/javacred_db` (modo `AUTO_SERVER`) |
 | JNDI datasource | `java:/datasources/JavacredDS` |
+
+> O caminho `~/temp/javacred_db` vale ao rodar o app (`dev-watch`), onde `~` é o seu home. Nos testes de integração o WildFly roda em container com `user.home=/tmp`, então o H2 fica em `/tmp/temp/...` **dentro do container** — efêmero, descartado ao fim do teste.
 
 **Layers Galleon provisionados:** `jaxrs`, `ejb`, `jpa`, `jsf`, `h2-driver`
 
@@ -227,8 +229,8 @@ API REST de uma corretora de valores. Demonstra EJB Lite, versionamento de API, 
 | Packaging | WAR |
 | Java | 21 |
 | Jakarta EE | 10.0.0 (EJB Lite) |
-| Servidor | WildFly 30.0.1 (Bootable JAR) |
-| Banco de dados | H2 file · `~/Temp/javacred_corretora_db` |
+| Servidor | WildFly 33.0.2.Final (Bootable JAR; testes na imagem `…:33.0.2.Final-jdk21`) |
+| Banco de dados | H2 file · `~/temp/javacred_corretora_db` (modo `AUTO_SERVER`) |
 | JNDI datasource | `java:/datasources/JavacredCorretoraDS` |
 
 **Layers Galleon provisionados:** `jaxrs`, `ejb-lite`, `jpa`, `jsf`, `h2-driver`
@@ -369,7 +371,7 @@ Configurado por `jboss-ejb-client.properties` (host `localhost`, porta `8080`) e
 
 ### `restclient/` — Testes de Integração REST
 
-Todos herdam de `JavacredTestBase`, que inicializa o `Client` JAX-RS uma única vez (`@BeforeAll`) apontando para `http://localhost:8080/javacred/rest`.
+Todos herdam de `JavacredTestBase`, que registra um `WildFlyContainer` (Testcontainers), faz deploy do `javacred.war` e inicializa o `Client` JAX-RS apontando para a URL dinâmica do container (`javacredBaseUri()` → `http://<host>:<porta-mapeada>/javacred/rest`). Não há host/porta fixos: o Testcontainers mapeia a porta 8080 do container para uma porta livre do host.
 
 #### `ContratoBeanTest`
 
@@ -436,39 +438,38 @@ source.register(
 ### Pré-requisitos
 
 - Java 21+
-- Maven não é necessário — o projeto inclui o **Maven Wrapper** (`mvnw`/`mvnw.cmd`) na raiz e em cada módulo, que baixa automaticamente a versão correta do Maven na primeira execução
-- **Docker** (apenas para os testes de integração) — os testes sobem o WildFly automaticamente via [Testcontainers](https://testcontainers.com/); não é preciso baixar ou iniciar o servidor manualmente
+- Maven não é necessário — o projeto inclui o **Maven Wrapper** (`mvnw`/`mvnw.cmd`) **na raiz**, que baixa automaticamente a versão correta do Maven na primeira execução. Todos os comandos são executados a partir da raiz (build multi-módulo); use `-pl <módulo>` para mirar um módulo específico.
+- **Docker** (apenas para os testes de integração) — os testes sobem o WildFly automaticamente via [Testcontainers](https://testcontainers.com/) (imagem `quay.io/wildfly/wildfly:33.0.2.Final-jdk21`); não é preciso baixar ou iniciar o servidor manualmente
+
+> Em todos os comandos, no Windows troque `./mvnw` por `mvnw.cmd`.
 
 ### Subindo o javacred
 
 ```bash
-cd javacred
-./mvnw wildfly-jar:dev-watch
+./mvnw -pl javacred wildfly-jar:dev-watch
 # Disponível em http://localhost:8080/javacred
 ```
-
-> Windows: `mvnw.cmd wildfly-jar:dev-watch`
 
 ### Subindo o javacred-corretora
 
 ```bash
-cd javacred-corretora
-./mvnw wildfly-jar:dev-watch
+./mvnw -pl javacred-corretora wildfly-jar:dev-watch
 # Disponível em http://localhost:8081
 ```
 
-> Windows: `mvnw.cmd wildfly-jar:dev-watch`
+> Os dois sobem ao mesmo tempo: a corretora usa `port-offset=1` (HTTP em :8081), evitando conflito com o javacred (:8080).
 
 ### Executando o desktop (EJB Remoto)
 
-Com o `javacred` rodando:
+Requer o `javacred` rodando (passo acima) e o artefato do `javacred` no repositório local:
 
 ```bash
-cd javacred-desktop
-./mvnw exec:java -Dexec.mainClass="br.com.casadocodigo.javacred.desktop.FinanciamentoMain"
-```
+# uma vez, para publicar o jar de classes do javacred em ~/.m2
+./mvnw install -pl javacred -am -DskipTests
 
-> Windows: `mvnw.cmd exec:java -Dexec.mainClass="br.com.casadocodigo.javacred.desktop.FinanciamentoMain"`
+./mvnw -pl javacred-desktop exec:java \
+  -Dexec.mainClass="br.com.casadocodigo.javacred.desktop.FinanciamentoMain"
+```
 
 ### Executando os testes
 

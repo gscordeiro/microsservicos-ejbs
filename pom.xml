@@ -23,11 +23,17 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <version.wildfly.jar.plugin>10.0.0.Final</version.wildfly.jar.plugin>
+        <version.wildfly.jar.plugin>12.0.0.Final</version.wildfly.jar.plugin>
         <version.jakarta.ee>10.0.0</version.jakarta.ee>
-        <version.wildfly>30.0.1.Final</version.wildfly>
+        <!-- ÚNICA fonte da versão do WildFly para TODO o projeto: runtime (bootable
+             JAR via galleon), EJB client BOM e imagem Docker dos testes derivam
+             daqui. Atualize só este valor para mover todos os módulos de uma vez. -->
+        <version.wildfly>33.0.2.Final</version.wildfly>
+        <!-- Imagem Docker (Testcontainers): mesma versão do WildFly + sufixo do JDK.
+             A community-universe publica imagem JDK 21 a partir da 33.x. -->
+        <version.wildfly.image>quay.io/wildfly/wildfly:${version.wildfly}-jdk21</version.wildfly.image>
         <version.microprofile>6.0</version.microprofile>
-        <version.wildfly.datasources.galleon.pack>6.0.0.Final</version.wildfly.datasources.galleon.pack>
+        <version.wildfly.datasources.galleon.pack>9.1.0.Final</version.wildfly.datasources.galleon.pack>
         <version.resteasy>6.2.6.Final</version.resteasy>
         <version.arquillian.bom>1.8.0.Final</version.arquillian.bom>
         <version.arquillian.container>5.0.1.Final</version.arquillian.container>
@@ -40,9 +46,6 @@
         <version.jackson>2.16.0</version.jackson>
         <version.h2>2.2.224</version.h2>
         <version.slf4j>2.0.17</version.slf4j>
-        <!-- WildFly 30.0.1.Final does not ship a JDK21 image on quay.io; using the
-             newest Jakarta EE 10 release that does. -->
-        <version.wildfly.image>33.0.2.Final-jdk21</version.wildfly.image>
 
         <version.maven.surefire>3.2.2</version.maven.surefire>
         <version.maven.dependency.plugin>3.6.1</version.maven.dependency.plugin>
@@ -123,6 +126,10 @@
                             <!-- Ryuk requires bind-mounting docker.sock, which fails on Colima/macOS -->
                             <TESTCONTAINERS_RYUK_DISABLED>true</TESTCONTAINERS_RYUK_DISABLED>
                         </environmentVariables>
+                        <systemPropertyVariables>
+                            <!-- Fonte única da imagem WildFly usada pelo WildFlyContainer (Testcontainers) -->
+                            <wildfly.image>${version.wildfly.image}</wildfly.image>
+                        </systemPropertyVariables>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -133,6 +140,9 @@
                         <environmentVariables>
                             <TESTCONTAINERS_RYUK_DISABLED>true</TESTCONTAINERS_RYUK_DISABLED>
                         </environmentVariables>
+                        <systemPropertyVariables>
+                            <wildfly.image>${version.wildfly.image}</wildfly.image>
+                        </systemPropertyVariables>
                     </configuration>
                 </plugin>
                 <plugin>
