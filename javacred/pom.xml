@@ -5,57 +5,34 @@
                     http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>br.com.casadocodigo</groupId>
+    <parent>
+        <groupId>br.com.casadocodigo</groupId>
+        <artifactId>javacred-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
     <artifactId>javacred</artifactId>
-    <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
     <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <failOnMissingWebXml>false</failOnMissingWebXml>
-
-        <version.wildfly.jar.plugin>10.0.0.Final</version.wildfly.jar.plugin>
-        <version.jakarta.ee>10.0.0</version.jakarta.ee>
-        <version.wildfly>30.0.1.Final</version.wildfly>
-        <version.microprofile>6.0</version.microprofile>
-        <version.wildfly.datasources.galleon.pack>6.0.0.Final</version.wildfly.datasources.galleon.pack>
-        <version.resteasy>6.2.6.Final</version.resteasy>
-        <version.arquillian.bom>1.8.0.Final</version.arquillian.bom>
-        <version.arquillian.container>5.0.1.Final</version.arquillian.container>
-        <version.junit>5.10.1</version.junit>
-        <version.mokito.core>5.8.0</version.mokito.core>
-        <version.mokito.all>1.10.19</version.mokito.all>
-        <version.primefaces>13.0.0</version.primefaces>
-        <version.jboss.ejb3>2.4.0.Final</version.jboss.ejb3>
-        <version.weld.junit5>4.0.3.Final</version.weld.junit5>
-        <version.testcontainers>1.20.4</version.testcontainers>
-        <!-- WildFly 30.0.1.Final does not ship a JDK21 image on quay.io; using the
-             newest Jakarta EE 10 release that does. -->
-        <version.wildfly.image>33.0.2.Final-jdk21</version.wildfly.image>
     </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.jboss.arquillian</groupId>
-                <artifactId>arquillian-bom</artifactId>
-                <version>${version.arquillian.bom}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <!-- Produz javacred-<version>-classes.jar, consumido por
+                         javacred-desktop para acessar as interfaces remotas. -->
+                    <attachClasses>true</attachClasses>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.wildfly.plugins</groupId>
                 <artifactId>wildfly-jar-maven-plugin</artifactId>
-                <version>${version.wildfly.jar.plugin}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -90,7 +67,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.2.2</version>
                 <configuration>
                     <environmentVariables>
                         <!-- Ryuk requires bind-mounting docker.sock, which fails on Colima/macOS -->
@@ -117,15 +93,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!--
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>5.3.15.Final</version>
-            <scope>provided</scope>
-        </dependency>
-        -->
-
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
@@ -141,10 +108,28 @@
         </dependency>
 
         <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+
+        <!-- test -->
+        <dependency>
+            <groupId>br.com.casadocodigo</groupId>
+            <artifactId>javacred-test-support</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.jboss.arquillian.junit5</groupId>
             <artifactId>arquillian-junit5-container</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.jboss.shrinkwrap.resolver</groupId>
             <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
@@ -154,7 +139,6 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>${version.junit}</version>
             <scope>test</scope>
         </dependency>
 
@@ -168,7 +152,6 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>${version.mokito.core}</version>
             <scope>test</scope>
         </dependency>
 
@@ -179,47 +162,6 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>testcontainers</artifactId>
-            <version>${version.testcontainers}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>${version.testcontainers}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>2.16.0</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>2.2.224</version>
-<!--            <scope>test</scope>-->
-        </dependency>
-
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>jboss-public-repository</id>
-            <name>JBoss Public Maven Repository Group</name>
-            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-        </repository>
-        <repository>
-            <id>Red Hat GA</id>
-            <name>Red Hat GA</name>
-            <url>https://maven.repository.redhat.com/ga/</url>
-        </repository>
-    </repositories>
 
 </project>

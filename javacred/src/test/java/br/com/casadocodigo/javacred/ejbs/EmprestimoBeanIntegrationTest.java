@@ -4,6 +4,7 @@ package br.com.casadocodigo.javacred.ejbs;
 import br.com.casadocodigo.javacred.entidades.*;
 import br.com.casadocodigo.javacred.exceptions.JavacredApplicationException;
 import br.com.casadocodigo.javacred.exceptions.JavacredException;
+import br.com.casadocodigo.javacred.testsupport.WildFlyContainer;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.Archive;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -25,8 +27,17 @@ import jakarta.transaction.UserTransaction;
 import static org.mockito.Mockito.*;
 
 
-@ExtendWith({WildFlyTestcontainerExtension.class, ArquillianExtension.class})
+@ExtendWith(ArquillianExtension.class)
 public class EmprestimoBeanIntegrationTest {
+
+    /**
+     * Start eager (em vez de no {@code beforeAll}) porque o ArquillianExtension
+     * é registrado via {@code @ExtendWith} e roda antes de qualquer
+     * {@code @RegisterExtension}, e ele precisa das system properties para
+     * resolver o {@code arquillian.xml}.
+     */
+    @RegisterExtension
+    static final WildFlyContainer WILDFLY = new WildFlyContainer().withAdminUser().started();
 
     @Deployment
     public static Archive createDeployment() {

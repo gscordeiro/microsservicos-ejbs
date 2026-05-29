@@ -2,25 +2,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>br.com.casadocodigo</groupId>
+
+  <parent>
+    <groupId>br.com.casadocodigo</groupId>
+    <artifactId>javacred-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
   <artifactId>javacred-corretora</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>war</packaging>
 
   <properties>
-    <maven.compiler.source>21</maven.compiler.source>
-    <maven.compiler.target>21</maven.compiler.target>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <failOnMissingWebXml>false</failOnMissingWebXml>
-
-    <version.wildfly.jar.plugin>10.0.0.Final</version.wildfly.jar.plugin>
-    <version.jakarta.ee>10.0.0</version.jakarta.ee>
-    <version.wildfly>30.0.1.Final</version.wildfly>
-    <version.microprofile>6.0</version.microprofile>
-    <version.wildfly.datasources.galleon.pack>6.0.0.Final</version.wildfly.datasources.galleon.pack>
-    <version.resteasy>6.2.6.Final</version.resteasy>
-    <version.junit>5.10.1</version.junit>
   </properties>
 
   <dependencies>
@@ -42,29 +36,26 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-client</artifactId>
-      <version>${version.resteasy}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jackson2-provider</artifactId>
-      <version>${version.resteasy}</version>
     </dependency>
 
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <version>${version.junit}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
+
   <build>
     <finalName>${project.artifactId}</finalName>
     <plugins>
       <plugin>
         <groupId>org.wildfly.plugins</groupId>
         <artifactId>wildfly-jar-maven-plugin</artifactId>
-        <version>${version.wildfly.jar.plugin}</version>
         <executions>
           <execution>
             <goals>
@@ -99,23 +90,6 @@
           <port>9991</port>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.2.2</version>
-      </plugin>
     </plugins>
   </build>
-  <repositories>
-    <repository>
-      <id>jboss-public-repository</id>
-      <name>JBoss Public Maven Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-    </repository>
-    <repository>
-      <id>Red Hat GA</id>
-      <name>Red Hat GA</name>
-      <url>https://maven.repository.redhat.com/ga/</url>
-    </repository>
-  </repositories>
 </project>
