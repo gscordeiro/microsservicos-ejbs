@@ -1,0 +1,164 @@
+###############################################################################
+# Javacred — requisições REST
+#
+# Este arquivo substitui as telas JSF como forma de "ver" as features do
+# Jakarta EE em ação. Abra no IntelliJ IDEA (HTTP Client embutido) ou no VS Code
+# (extensão "REST Client") e clique no ▶ ao lado de cada requisição.
+#
+# Pode ser rodado de cima para baixo: os ids criados são capturados em variáveis
+# (sintaxe de response handler do IntelliJ) e reaproveitados nas requisições
+# seguintes.
+#
+# Pré-requisito: subir o servidor ->  java -jar target/javacred-bootable.jar
+###############################################################################
+
+@host = http://localhost:8080/javacred
+@rest = {{host}}/rest
+
+
+###############################################################################
+# ÍNDICES DE CORREÇÃO
+# Lista os índices disponíveis. Na tela JSF isso era o combo de índice;
+# todo contrato precisa de um índice, então capturamos o id logo no início.
+###############################################################################
+
+### Listar índices (captura o id do primeiro para reuso abaixo)
+# @name listarIndices
+GET {{rest}}/indice
+Accept: application/json
+
+> {% client.global.set("indiceId", response.body[0].id); %}
+
+
+###############################################################################
+# CLIENTES
+# Substitui clientes.xhtml / cliente.xhtml (ClienteController).
+# Demonstra: EJB Stateful (ClienteBean) + cascade PERSIST de Cliente -> Contratos.
+# Regra de negócio: todo contrato exige índice de correção.
+###############################################################################
+
+### Listar todos os clientes
+GET {{rest}}/cliente/todos
+Accept: application/json
+
+### Cadastrar cliente já com contratos (cascade JPA grava tudo numa tacada)
+# @name criarCliente
+POST {{rest}}/cliente
+Content-Type: application/json
+
+{
+  "nome": "Maria da Silva",
+  "preferencial": true,
+  "contratos": [
+    { "descricao": "Contrato inicial A", "indiceCorrecao": { "id": {{indiceId}} } },
+    { "descricao": "Contrato inicial B", "indiceCorrecao": { "id": {{indiceId}} } }
+  ]
+}
+
+> {%
+    client.global.set("clienteId", response.body.id);
+    client.test("cliente criado com id", function () {
+        client.assert(response.status === 200, "status != 200");
+        client.assert(response.body.id !== null, "id nulo");
+    });
+%}
+
+### Cadastrar cliente com contrato SEM índice  ->  deve falhar com HTTP 422
+POST {{rest}}/cliente
+Content-Type: application/json
+
+{
+  "nome": "Cliente Invalido",
+  "preferencial": false,
+  "contratos": [ { "descricao": "Sem indice" } ]
+}
+
+> {%
+    client.test("contrato sem indice e rejeitado", function () {
+        client.assert(response.status === 422, "deveria ser 422");
+    });
+%}
+
+### Conferir o cliente recém-criado na listagem
+GET {{rest}}/cliente/todos
+Accept: application/json
+
+
+###############################################################################
+# EMPRÉSTIMOS
+# Substitui emprestimo.xhtml / emprestimos.xhtml (EmprestimoController).
+# Demonstra: EJB EmprestimoBean + ServicoAnaliseFinanceira (análise de crédito
+# e rollback transacional). Índice de correção é OBRIGATÓRIO no registro.
+###############################################################################
+
+### Listar contratos/empréstimos
+GET {{rest}}/emprestimo/contratos
+Accept: application/json
+
+### Registrar empréstimo SEM índice  ->  deve falhar com HTTP 422 (regra de negócio)
+POST {{rest}}/emprestimo
+Content-Type: application/json
+
+{
+  "descricao": "Emprestimo sem indice",
+  "valor": 5000.0,
+  "cliente": { "id": {{clienteId}} }
+}
+
+> {%
+    client.test("registro sem indice e rejeitado", function () {
+        client.assert(response.status === 422, "deveria ser 422");
+    });
+%}
+
+### Registrar empréstimo para cliente PREFERENCIAL (aprovado mesmo se o SAF reclamar)
+# @name registrarEmprestimo
+POST {{rest}}/emprestimo
+Content-Type: application/json
+
+{
+  "descricao": "Financiamento do carro",
+  "valor": 60000.0,
+  "quantidadeMeses": 48,
+  "taxaMensal": 0.019,
+  "cliente": { "id": {{clienteId}} },
+  "indiceCorrecao": { "id": {{indiceId}} }
+}
+
+> {%
+    client.global.set("contratoId", response.body.id);
+    client.test("emprestimo registrado", function () {
+        client.assert(response.status === 200, "status != 200");
+        client.assert(response.body.indiceCorrecao !== null, "sem indice");
+    });
+%}
+
+### Quitar o empréstimo recém-registrado (saldo vai a zero; SAF registra a quitação)
+POST {{rest}}/emprestimo/{{contratoId}}/quitar
+
+### Quitar um contrato inexistente  ->  HTTP 404
+POST {{rest}}/emprestimo/999999/quitar
+
+
+###############################################################################
+# CORREÇÃO DE SALDO (concorrência)
+# Substitui ajustaContratos.xhtml (AtualizadorSaldoController).
+# Demonstra: estratégias de concorrência no EJB ContratoBean, comparadas via
+# Benchmark (duração + saldo geral). As versões ASSÍNCRONAS migram na Fase 3
+# para CompletableFuture + SSE.
+###############################################################################
+
+### Quantos contratos existem
+GET {{rest}}/correcao/total
+
+### SETUP: gerar 1000 contratos (todos com índice IPCAE) para o benchmark
+POST {{rest}}/correcao/gerar-contratos
+
+### Correção SÍNCRONA  (laço simples, sequencial)
+POST {{rest}}/correcao/sync
+
+### Correção PARALELA  (EJB @Asynchronous + Future, dispara N tarefas)
+POST {{rest}}/correcao/paralelo
+
+### Correção via MES   (ManagedExecutorService.invokeAll)
+POST {{rest}}/correcao/mes

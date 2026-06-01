@@ -34,6 +34,7 @@ public class Contrato implements Serializable {
 	private int hash;
 
     @ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH})
+	@JoinColumn(nullable = false)
 	private Indice indiceCorrecao;
 
 	@ManyToOne(cascade=CascadeType.MERGE)
@@ -53,7 +54,9 @@ public class Contrato implements Serializable {
         System.out.println(">>>>>>> Contrato.updateBean");
         hash = this.hashCode();
         ultimaModificacao = new Date();
-        if(saldo == null)  saldo = valor;
+        // Saldo nunca fica nulo: começa igual ao valor, ou 0 quando o contrato
+        // não tem valor (ex.: contratos só com descrição criados pela tela de cliente).
+        if(saldo == null)  saldo = valor != null ? valor : 0.0;
     }
 
 	@Override

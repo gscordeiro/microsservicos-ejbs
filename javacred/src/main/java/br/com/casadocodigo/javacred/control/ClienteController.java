@@ -10,8 +10,10 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import br.com.casadocodigo.javacred.ejbs.ClienteBean;
+import br.com.casadocodigo.javacred.ejbs.ContratoBean;
 import br.com.casadocodigo.javacred.entidades.Cliente;
 import br.com.casadocodigo.javacred.entidades.Contrato;
+import br.com.casadocodigo.javacred.entidades.Indice;
 
 @Named
 @ViewScoped
@@ -21,21 +23,30 @@ public class ClienteController implements Serializable{
 
 	@Inject
 	private ClienteBean clienteBean;
-	
+
+	@Inject
+	private ContratoBean contratoBean;
+
 	private List<Cliente> clientes;
+	private List<Indice> indices;
 
 	private Cliente cliente = new Cliente();
-	
+
 	@PostConstruct
 	public void init(){
 		System.out.println("ClienteController.init()");
+		indices = contratoBean.buscarIndices();
 	}
-	
+
 	public List<Cliente> getClientes() {
 		if (clientes == null) {
 			clientes = clienteBean.listarTodos();
 		}
 		return clientes;
+	}
+
+	public List<Indice> getIndices() {
+		return indices;
 	}
 	
 	public void adicionarContrato(){

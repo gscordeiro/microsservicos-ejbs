@@ -12,6 +12,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import java.util.List;
 
 /**
@@ -35,13 +36,23 @@ public class ClienteResource {
     }
 
     @POST
-    public Cliente salvar(Cliente cliente) {
+    public Response salvar(Cliente cliente) {
         // mappedBy="cliente": o lado dono é Contrato, então amarramos a volta
         // antes de persistir para o cascade ALL gravar os contratos com a FK.
+        // O índice de cada contrato vem no corpo (só o id) e é validado/resolvido
+        // no ClienteBean.
         for (Contrato contrato : cliente.getContratos()) {
             contrato.setCliente(cliente);
         }
-        clienteBean.salvar(cliente);
-        return cliente;
+
+        try {
+            clienteBean.salvar(cliente);
+            return Response.ok(cliente).build();
+        } catch (Exception e) {
+            return Response.status(422) // Unprocessable Entity
+                    .entity(e.getMessage())
+                    .type(MediaType.TEXT_PLAIN)
+                    .build();
+        }
     }
 }

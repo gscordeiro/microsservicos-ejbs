@@ -1,6 +1,9 @@
 package br.com.casadocodigo.javacred.ejbs;
 
 import br.com.casadocodigo.javacred.entidades.Cliente;
+import br.com.casadocodigo.javacred.entidades.Contrato;
+import br.com.casadocodigo.javacred.entidades.Indice;
+import br.com.casadocodigo.javacred.exceptions.JavacredApplicationException;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -30,7 +33,23 @@ public class ClienteBean {
 		return em.find(Cliente.class, id);
 	}
 	public void salvar(Cliente cliente){
-		
+
+		// Como num financiamento real, todo contrato precisa de um índice de
+		// correção desde a contratação — mesma regra do registro de empréstimo.
+		for (Contrato contrato : cliente.getContratos()) {
+			Indice indice = contrato.getIndiceCorrecao();
+			if (indice == null || indice.getId() == null) {
+				throw new JavacredApplicationException("Todo contrato do cliente deve ter um índice de correção.");
+			}
+			// Re-attacha no MESMO contexto de persistência para o cascade PERSIST
+			// não receber uma entidade destacada.
+			Indice gerenciado = em.find(Indice.class, indice.getId());
+			if (gerenciado == null) {
+				throw new JavacredApplicationException("Índice de correção inexistente: " + indice.getId());
+			}
+			contrato.setIndiceCorrecao(gerenciado);
+		}
+
 		em.persist(cliente);
 	}
 	
