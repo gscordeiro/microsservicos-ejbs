@@ -173,6 +173,10 @@ Compara estratégias de processamento paralelo (síncrono × paralelo × `Manage
   - **.http:** requisições *"Correção SÍNCRONA / PARALELA / via MES"*
 - **JSF:** `ajustaContratos.jsf` — botões com medição de desempenho na tela
 - *Total de contratos:* `GET /rest/correcao/total`
+- **Versão assíncrona (SSE + `CompletableFuture`)** — Jakarta Concurrency 3.1: empurra o resultado quando o processamento termina, sem polling:
+  - **curl (streaming):** `curl -N http://localhost:8080/javacred/rest/correcao/async-stream`
+  - **.http:** requisição *"Correção ASSÍNCRONA via SSE"* (melhor visto com `curl -N`)
+  - **Swagger UI:** lista o endpoint, mas não renderiza o stream
 
 ### 8. Cotação de moedas — REST assíncrono (`@Suspended`/`AsyncResponse`)
 - **Swagger UI:** grupo *Cotações* → `GET /rest/cotacao/dolar/{quantidade}`

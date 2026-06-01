@@ -162,3 +162,10 @@ POST {{rest}}/correcao/paralelo
 
 ### Correção via MES   (ManagedExecutorService.invokeAll)
 POST {{rest}}/correcao/mes
+
+### Correção ASSÍNCRONA via SSE  (Jakarta Concurrency 3.1 + CompletableFuture)
+# Empurra o evento "inicio" na hora e o "resultado" quando o CompletableFuture
+# completa — sem polling. Melhor visto no terminal:
+#   curl -N http://localhost:8080/javacred/rest/correcao/async-stream
+GET {{rest}}/correcao/async-stream
+Accept: text/event-stream

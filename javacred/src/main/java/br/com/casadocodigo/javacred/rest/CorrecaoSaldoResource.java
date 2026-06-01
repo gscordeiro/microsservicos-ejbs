@@ -3,6 +3,7 @@ package br.com.casadocodigo.javacred.rest;
 import br.com.casadocodigo.javacred.control.Benchmark;
 import br.com.casadocodigo.javacred.control.GeradorContratos;
 import br.com.casadocodigo.javacred.ejbs.ContratoBean;
+import br.com.casadocodigo.javacred.ejbs.CorrecaoAsyncService;
 import br.com.casadocodigo.javacred.entidades.Indice;
 
 import jakarta.enterprise.context.RequestScoped;
@@ -11,7 +12,10 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.sse.Sse;
+import jakarta.ws.rs.sse.SseEventSink;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import java.util.List;
@@ -35,6 +39,9 @@ public class CorrecaoSaldoResource {
 
     @Inject
     private GeradorContratos geradorContratos;
+
+    @Inject
+    private CorrecaoAsyncService correcaoAsync;
 
     @GET
     @Path("/total")
@@ -70,6 +77,47 @@ public class CorrecaoSaldoResource {
     @Operation(summary = "Correção via ManagedExecutorService.invokeAll")
     public Benchmark viaManagedExecutorService() {
         return executar("MES", contratoBean.buscarIndices(), contratoBean::corrigeContratosViaMES2);
+    }
+
+    @GET
+    @Path("/async-stream")
+    @Produces(MediaType.SERVER_SENT_EVENTS)
+    @Operation(summary = "Correção assíncrona com resultado empurrado via SSE (Jakarta Concurrency 3.1 + CompletableFuture)")
+    public void correcaoAsyncStream(@Context SseEventSink sink, @Context Sse sse) {
+        long total = contratoBean.contaContratos();
+        Benchmark benchmark = new Benchmark(total, "assíncrono (SSE)");
+
+        // Empurra o "início" imediatamente; o resultado chega quando o
+        // CompletableFuture completar — sem polling (substitui o p:poll do JSF).
+        sink.send(sse.newEventBuilder()
+                .name("inicio")
+                .data(String.format("Processando %d contratos de forma assíncrona...", total))
+                .build());
+
+        correcaoAsync.corrigir(contratoBean.buscarIndices())
+                .thenAccept(saldo -> {
+                    benchmark.setResultado(saldo);
+                    benchmark.stop();
+                    sink.send(sse.newEventBuilder()
+                                    .name("resultado")
+                                    .mediaType(MediaType.APPLICATION_JSON_TYPE)
+                                    .data(Benchmark.class, benchmark)
+                                    .build())
+                            .whenComplete((r, e) -> fechar(sink));
+                })
+                .exceptionally(erro -> {
+                    sink.send(sse.newEventBuilder().name("erro").data(String.valueOf(erro.getMessage())).build())
+                            .whenComplete((r, e) -> fechar(sink));
+                    return null;
+                });
+    }
+
+    private static void fechar(SseEventSink sink) {
+        try {
+            sink.close();
+        } catch (Exception ignorado) {
+            // conexão encerrando; nada a fazer
+        }
     }
 
     private Benchmark executar(String nome, List<Indice> indices, java.util.function.ToDoubleFunction<List<Indice>> estrategia) {
