@@ -12,11 +12,13 @@ import jakarta.ws.rs.container.AsyncResponse;
 import jakarta.ws.rs.container.Suspended;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @Path("/cotacao")
 @Produces(MediaType.APPLICATION_JSON)
+@Tag(name = "Cotações", description = "Cotação de moedas com JAX-RS assíncrono (@Suspended)")
 public class CotacaoMoedasBean {
 
     @Resource

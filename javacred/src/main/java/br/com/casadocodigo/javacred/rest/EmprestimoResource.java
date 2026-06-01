@@ -18,6 +18,8 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import java.util.List;
 
 /**
@@ -29,6 +31,7 @@ import java.util.List;
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Tag(name = "Empréstimos", description = "Registro e quitação de empréstimos (EJB + análise de crédito)")
 public class EmprestimoResource {
 
     @Inject
@@ -42,11 +45,13 @@ public class EmprestimoResource {
 
     @GET
     @Path("/contratos")
+    @Operation(summary = "Lista os contratos/empréstimos")
     public List<Contrato> listarContratos() {
         return emprestimoBean.listarContratos();
     }
 
     @POST
+    @Operation(summary = "Registra um empréstimo (cliente e índice de correção obrigatórios)")
     public Response registrar(Contrato contrato) {
         // O JSON do cliente chega apenas com o id (como o selectOneMenu + ClienteConverter
         // faziam): resolvemos a entidade completa antes de registrar.
@@ -77,6 +82,7 @@ public class EmprestimoResource {
 
     @POST
     @Path("/{id}/quitar")
+    @Operation(summary = "Quita um contrato (saldo vai a zero; registra a quitação)")
     public Response quitar(@PathParam("id") Integer id) {
         Contrato contrato = contratoBean.buscarContrato(id);
         if (contrato == null) {

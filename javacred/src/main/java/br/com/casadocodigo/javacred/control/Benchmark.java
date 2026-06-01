@@ -2,6 +2,7 @@ package br.com.casadocodigo.javacred.control;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.util.concurrent.Future;
 
@@ -46,6 +47,7 @@ public class Benchmark {
     }
 
     @JsonIgnore
+    @Schema(hidden = true)
     public Future<Double> getResultadoAsync() {
         return resultadoAsync;
     }

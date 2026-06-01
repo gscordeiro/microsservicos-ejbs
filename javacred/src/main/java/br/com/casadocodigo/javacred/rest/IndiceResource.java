@@ -9,6 +9,8 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import java.util.List;
 
 /**
@@ -19,12 +21,14 @@ import java.util.List;
 @Path("/indice")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)
+@Tag(name = "Índices", description = "Índices de correção disponíveis")
 public class IndiceResource {
 
     @Inject
     private ContratoBean contratoBean;
 
     @GET
+    @Operation(summary = "Lista os índices de correção")
     public List<Indice> listar() {
         return contratoBean.buscarIndices();
     }

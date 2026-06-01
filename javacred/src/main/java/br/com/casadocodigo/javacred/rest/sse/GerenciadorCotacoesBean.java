@@ -13,12 +13,14 @@ import jakarta.ws.rs.sse.OutboundSseEvent;
 import jakarta.ws.rs.sse.Sse;
 import jakarta.ws.rs.sse.SseBroadcaster;
 import jakarta.ws.rs.sse.SseEventSink;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
 @Singleton
 @Path("/acompanhar-cotacao")
+@Tag(name = "Cotações (SSE)", description = "Acompanhamento de cotações via Server-Sent Events")
 public class GerenciadorCotacoesBean {
 
     @Context

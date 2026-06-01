@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Javacred — API (Swagger UI)</title>
+    <!-- Swagger UI servido pelo próprio WAR (webjar org.webjars:swagger-ui). -->
+    <link rel="stylesheet" href="webjars/swagger-ui/5.11.8/swagger-ui.css">
+    <style> body { margin: 0; } </style>
+</head>
+<body>
+<div id="swagger-ui"></div>
+<script src="webjars/swagger-ui/5.11.8/swagger-ui-bundle.js"></script>
+<script src="webjars/swagger-ui/5.11.8/swagger-ui-standalone-preset.js"></script>
+<script>
+    window.onload = function () {
+        // Documento OpenAPI gerado pela WildFly (MicroProfile OpenAPI) na raiz do host.
+        window.ui = SwaggerUIBundle({
+            url: '/openapi',
+            dom_id: '#swagger-ui',
+            deepLinking: true,
+            presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
+            layout: 'StandaloneLayout'
+        });
+    };
+</script>
+</body>
+</html>

@@ -11,12 +11,14 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import java.time.YearMonth;
 import java.util.Arrays;
 import java.util.List;
 
 @Stateless
 @Path("/gera-contratos")
+@Tag(name = "Geração de dados", description = "Geração em massa de contratos para o benchmark")
 public class GeradorContratos {
 
 	public static final String NOME_INDICE = "IPCAE";

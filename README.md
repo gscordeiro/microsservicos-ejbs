@@ -93,6 +93,98 @@ Sistema de gerenciamento de crédito e empréstimos. Demonstra o uso completo de
 ./mvnw -pl javacred verify
 ```
 
+## Interfaces disponíveis para testar
+
+Com a aplicação no ar, as mesmas funcionalidades (EJB + JPA por baixo) podem ser exercitadas por qualquer uma destas interfaces:
+
+| Interface | Onde | Melhor para |
+|-----------|------|-------------|
+| **Swagger UI** | `http://localhost:8080/javacred/swagger-ui.html` | Explorar e executar a API clicando em *Try it out* — sem instalar nada |
+| **Arquivo `.http`** | `javacred/src/main/http/javacred.http` | Rodar dentro da IDE (HTTP Client do IntelliJ / extensão *REST Client* do VS Code); roda de cima para baixo capturando os ids automaticamente |
+| **curl** | terminal | Exemplos copiáveis e scripts |
+| **Telas JSF** | `http://localhost:8080/javacred` | Interface web original (em remoção) |
+
+> Base REST: `http://localhost:8080/javacred/rest`. O documento OpenAPI fica em `http://localhost:8080/openapi`.
+> No Windows, use `curl.exe` no PowerShell (lá `curl` é alias de `Invoke-WebRequest`).
+> **Regra de negócio:** todo contrato exige um **índice de correção**. Comece pela funcionalidade 1 para descobrir o `id` do índice e reutilize-o nos cadastros.
+
+## Funcionalidades e como testar
+
+### 1. Listar índices de correção
+Descobre o `id` do índice exigido nos cadastros de cliente e empréstimo.
+- **Swagger UI:** grupo *Índices* → `GET /rest/indice` → *Try it out* → *Execute*
+- **curl:** `curl http://localhost:8080/javacred/rest/indice`
+- **.http:** requisição *"Listar índices"* (captura `indiceId`)
+- **JSF:** aparece como combo "Índice de correção" nas telas de cliente e empréstimo
+
+### 2. Cadastrar cliente com contratos (cascade JPA `Cliente → Contratos`)
+- **Swagger UI:** grupo *Clientes* → `POST /rest/cliente`
+- **curl:**
+  ```bash
+  curl -X POST http://localhost:8080/javacred/rest/cliente \
+    -H "Content-Type: application/json" \
+    -d '{"nome":"Maria","preferencial":true,
+         "contratos":[{"descricao":"A","indiceCorrecao":{"id":1}}]}'
+  ```
+- **.http:** requisição *"Cadastrar cliente já com contratos"* (captura `clienteId`)
+- **JSF:** `cliente.jsf` — preencha nome, adicione contratos e escolha o índice de cada um
+- *Validação:* contrato sem índice → **HTTP 422**
+
+### 3. Listar clientes
+- **Swagger UI:** grupo *Clientes* → `GET /rest/cliente/todos`
+- **curl:** `curl http://localhost:8080/javacred/rest/cliente/todos`
+- **.http:** requisição *"Listar todos os clientes"*
+- **JSF:** `clientes.jsf`
+
+### 4. Registrar empréstimo (EJB + análise de crédito + rollback)
+- **Swagger UI:** grupo *Empréstimos* → `POST /rest/emprestimo`
+- **curl:**
+  ```bash
+  curl -X POST http://localhost:8080/javacred/rest/emprestimo \
+    -H "Content-Type: application/json" \
+    -d '{"descricao":"Financiamento","valor":60000.0,
+         "cliente":{"id":1},"indiceCorrecao":{"id":1}}'
+  ```
+- **.http:** requisição *"Registrar empréstimo para cliente PREFERENCIAL"* (captura `contratoId`)
+- **JSF:** `emprestimo.jsf` — combos de cliente e índice obrigatórios
+- *Validação:* sem índice → **HTTP 422**
+
+### 5. Listar empréstimos / contratos
+- **Swagger UI:** grupo *Empréstimos* → `GET /rest/emprestimo/contratos`
+- **curl:** `curl http://localhost:8080/javacred/rest/emprestimo/contratos`
+- **.http:** requisição *"Listar contratos/empréstimos"*
+- **JSF:** `emprestimos.jsf`
+
+### 6. Quitar empréstimo (transação `REQUIRES_NEW` + registro de quitação)
+- **Swagger UI:** grupo *Empréstimos* → `POST /rest/emprestimo/{id}/quitar`
+- **curl:** `curl -X POST http://localhost:8080/javacred/rest/emprestimo/1/quitar`
+- **.http:** requisição *"Quitar o empréstimo recém-registrado"*
+- **JSF:** `emprestimos.jsf` — botão *Quitar* na linha do contrato
+- *Validação:* id inexistente → **HTTP 404**
+
+### 7. Correção de saldo — benchmark de concorrência
+Compara estratégias de processamento paralelo (síncrono × paralelo × `ManagedExecutorService`).
+- **Setup (gerar massa):**
+  - **Swagger UI:** grupo *Correção de saldo* → `POST /rest/correcao/gerar-contratos`
+  - **curl:** `curl -X POST http://localhost:8080/javacred/rest/correcao/gerar-contratos`
+- **Executar cada estratégia** (devolve `Benchmark` com duração e saldo geral):
+  - **Swagger UI:** `POST /rest/correcao/sync` · `/paralelo` · `/mes`
+  - **curl:** `curl -X POST http://localhost:8080/javacred/rest/correcao/sync` (idem `paralelo`, `mes`)
+  - **.http:** requisições *"Correção SÍNCRONA / PARALELA / via MES"*
+- **JSF:** `ajustaContratos.jsf` — botões com medição de desempenho na tela
+- *Total de contratos:* `GET /rest/correcao/total`
+
+### 8. Cotação de moedas — REST assíncrono (`@Suspended`/`AsyncResponse`)
+- **Swagger UI:** grupo *Cotações* → `GET /rest/cotacao/dolar/{quantidade}`
+- **curl:** `curl http://localhost:8080/javacred/rest/cotacao/dolar/10`
+- **JSF:** não há tela (somente REST)
+
+### 9. Acompanhamento de cotações — Server-Sent Events (SSE)
+- **curl (streaming):** `curl -N http://localhost:8080/javacred/rest/acompanhar-cotacao/dolar`
+  (no Windows: `curl.exe -N ...`)
+- **Swagger UI:** lista o endpoint, mas não renderiza o stream — use `curl -N`
+- **JSF:** não há tela (somente REST)
+
 ## Configuração do Módulo
 
 | Item | Valor |
@@ -107,7 +199,7 @@ Sistema de gerenciamento de crédito e empréstimos. Demonstra o uso completo de
 
 > O caminho `~/temp/javacred_db` vale ao rodar o app (`dev-watch`), onde `~` é o seu home. Nos testes de integração o WildFly roda em container com `user.home=/tmp`, então o H2 fica em `/tmp/temp/...` **dentro do container** — efêmero, descartado ao fim do teste.
 
-**Layers Galleon provisionados:** `jaxrs`, `ejb`, `jpa`, `jsf`, `h2-driver`
+**Layers Galleon provisionados:** `jaxrs`, `ejb`, `jpa`, `jsf`, `microprofile-openapi`, `h2-driver`
 
 ## Estrutura de Diretórios
 
@@ -125,6 +217,8 @@ javacred/
     │   │   │   └── sse/
     │   │   ├── servlet/
     │   │   └── exceptions/
+    │   ├── http/
+    │   │   └── javacred.http        # requisições REST (IntelliJ/VS Code HTTP Client)
     │   ├── resources/META-INF/
     │   │   └── persistence.xml
     │   └── webapp/
@@ -133,6 +227,8 @@ javacred/
     │       │   ├── beans.xml
     │       │   ├── faces-config.xml
     │       │   └── javacred-ds.xml
+    │       ├── index.html
+    │       ├── swagger-ui.html      # Swagger UI (webjar) apontando para /openapi
     │       ├── cliente.xhtml
     │       ├── clientes.xhtml
     │       ├── emprestimo.xhtml

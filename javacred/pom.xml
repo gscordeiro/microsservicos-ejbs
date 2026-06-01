@@ -16,6 +16,8 @@
 
     <properties>
         <failOnMissingWebXml>false</failOnMissingWebXml>
+        <version.microprofile.openapi.api>4.0</version.microprofile.openapi.api>
+        <version.swagger.ui>5.11.8</version.swagger.ui>
     </properties>
 
     <build>
@@ -67,6 +69,7 @@
                         <layer>ejb</layer>
                         <layer>jpa</layer>
                         <layer>jsf</layer>
+                        <layer>microprofile-openapi</layer>
                         <layer>h2-driver</layer>
                     </layers>
                     <excluded-layers>
@@ -99,6 +102,22 @@
             <artifactId>primefaces</artifactId>
             <version>${version.primefaces}</version>
             <classifier>jakarta</classifier>
+        </dependency>
+
+        <!-- Anotações do MicroProfile OpenAPI (@Tag/@Operation); o runtime é
+             provido pela WildFly via layer microprofile-openapi. -->
+        <dependency>
+            <groupId>org.eclipse.microprofile.openapi</groupId>
+            <artifactId>microprofile-openapi-api</artifactId>
+            <version>${version.microprofile.openapi.api}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Swagger UI servido pelo próprio WAR (META-INF/resources/webjars/...). -->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>swagger-ui</artifactId>
+            <version>${version.swagger.ui}</version>
         </dependency>
 
         <dependency>

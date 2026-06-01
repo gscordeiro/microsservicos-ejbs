@@ -12,6 +12,8 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import java.util.List;
 
 /**
@@ -25,6 +27,7 @@ import java.util.List;
 @Path("/correcao")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)
+@Tag(name = "Correção de saldo", description = "Benchmark de estratégias de concorrência para corrigir o saldo dos contratos")
 public class CorrecaoSaldoResource {
 
     @Inject
@@ -35,12 +38,14 @@ public class CorrecaoSaldoResource {
 
     @GET
     @Path("/total")
+    @Operation(summary = "Quantidade de contratos no banco")
     public long total() {
         return contratoBean.contaContratos();
     }
 
     @POST
     @Path("/gerar-contratos")
+    @Operation(summary = "Gera 1000 contratos (todos com índice) para o benchmark")
     public long gerarContratos() {
         geradorContratos.geraContratos();
         return contratoBean.contaContratos();
@@ -48,18 +53,21 @@ public class CorrecaoSaldoResource {
 
     @POST
     @Path("/sync")
+    @Operation(summary = "Correção síncrona (sequencial)")
     public Benchmark sincrono() {
         return executar("síncrono", contratoBean.buscarIndices(), contratoBean::corrigeContratos);
     }
 
     @POST
     @Path("/paralelo")
+    @Operation(summary = "Correção paralela (EJB @Asynchronous + Future)")
     public Benchmark paralelo() {
         return executar("paralelo", contratoBean.buscarIndices(), contratoBean::corrigeContratosPar);
     }
 
     @POST
     @Path("/mes")
+    @Operation(summary = "Correção via ManagedExecutorService.invokeAll")
     public Benchmark viaManagedExecutorService() {
         return executar("MES", contratoBean.buscarIndices(), contratoBean::corrigeContratosViaMES2);
     }
