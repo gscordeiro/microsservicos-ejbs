@@ -15,9 +15,9 @@ Projeto de estudo e referência de **Java EE / Jakarta EE** demonstrando EJBs, J
 │   │  (WAR · EJB)    │   │   (WAR · EJB Lite)   │   │
 │   │  WildFly 40     │   │   WildFly 40         │   │
 │   │  Porta :8080    │   │   Porta :8081        │   │
-│   └────────┬────────┘   └──────────────────────┘   │
+│   └────────▲────────┘   └──────────────────────┘   │
 │            │ Remote EJB / REST                     │
-│   ┌────────▼────────┐                              │
+│   ┌────────┴────────┐                              │
 │   │javacred-desktop │                              │
 │   │   (JAR · CLI)   │                              │
 │   └─────────────────┘                              │
