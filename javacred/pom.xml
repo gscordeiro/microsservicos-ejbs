@@ -24,11 +24,22 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <!-- Produz javacred-<version>-classes.jar, consumido por
-                         javacred-desktop para acessar as interfaces remotas. -->
-                    <attachClasses>true</attachClasses>
-                </configuration>
+                <executions>
+                    <execution>
+                        <id>default-war</id>
+                        <goals>
+                            <goal>war</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Produz javacred-<version>-classes.jar, consumido por
+                                 javacred-desktop para acessar as interfaces remotas.
+                                 Escopo limitado ao goal `war` porque o `dev-watch` do
+                                 wildfly-jar invoca o goal `exploded`, que não conhece
+                                 esse parâmetro. -->
+                            <attachClasses>true</attachClasses>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.wildfly.plugins</groupId>

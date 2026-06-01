@@ -46,11 +46,29 @@ Projeto de estudo e referência de **Java EE / Jakarta EE** demonstrando EJBs, J
 
 ---
 
+## Pré-requisitos
+
+- **Java 21+**
+- **Maven** não é necessário — o projeto inclui o **Maven Wrapper** (`mvnw`/`mvnw.cmd`) na raiz, que baixa o Maven automaticamente. Todos os comandos rodam **a partir da raiz** do projeto.
+- **Docker** apenas para os testes de integração (Testcontainers sobe o WildFly automaticamente). Não é preciso instalar o WildFly localmente.
+
+> Windows: troque `./mvnw` por `mvnw.cmd` em todos os comandos.
+
+---
+
 ## Módulos
 
 - [javacred — Sistema de Crédito](#javacred)
 - [javacred-corretora — API de Corretora](#javacred-corretora)
 - [javacred-desktop — Cliente Desktop / Testes de Integração](#javacred-desktop)
+
+### Rodando todos os testes
+
+```bash
+./mvnw verify
+```
+
+Roda os testes de unidade (`test`) e de integração (`verify`) de todos os módulos. Os testes de integração rodam na fase `verify` porque dependem do empacotamento do WAR para fazer o deploy no container WildFly.
 
 ---
 
@@ -59,6 +77,21 @@ Projeto de estudo e referência de **Java EE / Jakarta EE** demonstrando EJBs, J
 > [↑ Voltar à visão geral](#visão-geral-da-arquitetura) · [javacred-corretora →](#javacred-corretora) · [javacred-desktop →](#javacred-desktop)
 
 Sistema de gerenciamento de crédito e empréstimos. Demonstra o uso completo de EJBs (Stateless, Stateful, Singleton), JPA com relacionamentos, JAX-RS com resposta assíncrona e SSE, JSF com PrimeFaces e múltiplas estratégias de processamento paralelo.
+
+## Como executar
+
+```bash
+./mvnw -pl javacred wildfly-jar:dev-watch
+# disponível em http://localhost:8080/javacred
+```
+
+`dev-watch` sobe o WildFly em modo *bootable JAR*, faz o deploy do WAR e fica observando alterações no código-fonte para redeploy automático.
+
+**Testes** (unidade + integração, este último sobe o WildFly em Docker via Testcontainers):
+
+```bash
+./mvnw -pl javacred verify
+```
 
 ## Configuração do Módulo
 
@@ -222,6 +255,21 @@ corrigeContratosViaMES1/2() → ManagedExecutorService com Callable
 
 API REST de uma corretora de valores. Demonstra EJB Lite, versionamento de API, estratégias de HTTP caching com `CacheControl`, ETags e `Last-Modified`, além de log de consultas em banco de dados.
 
+## Como executar
+
+```bash
+./mvnw -pl javacred-corretora wildfly-jar:dev-watch
+# disponível em http://localhost:8081
+```
+
+Roda em paralelo com o `javacred` sem conflito: a corretora usa `port-offset=1` (HTTP em :8081), enquanto o `javacred` ocupa :8080.
+
+**Testes**:
+
+```bash
+./mvnw -pl javacred-corretora verify
+```
+
 ## Configuração do Módulo
 
 | Item | Valor |
@@ -319,6 +367,26 @@ ETag / If-None-Match          → validação de integridade em POSTs condiciona
 > [↑ Voltar à visão geral](#visão-geral-da-arquitetura) · [← javacred-corretora](#javacred-corretora)
 
 Aplicação standalone (JAR com `main()`) que atua como cliente do módulo `javacred`. Demonstra invocação de EJBs remotos via JNDI, consumo de APIs REST (síncrono, assíncrono e reativo) e recepção de eventos SSE.
+
+## Como executar
+
+A `main` faz lookup remoto de EJB, então o `javacred` precisa estar no ar antes — suba-o com `./mvnw -pl javacred wildfly-jar:dev-watch` em outro terminal.
+
+```bash
+# uma vez, para publicar o jar de classes do javacred em ~/.m2
+./mvnw install -pl javacred -am -DskipTests
+
+./mvnw -pl javacred-desktop exec:java \
+  -Dexec.mainClass="br.com.casadocodigo.javacred.desktop.FinanciamentoMain"
+```
+
+**Testes** de integração REST (sobem o WildFly via Testcontainers — não precisa do `javacred` rodando):
+
+```bash
+./mvnw -pl javacred-desktop -am verify
+```
+
+`-am` (also-make) garante que o `javacred.war` seja empacotado antes, já que os testes fazem deploy dele no container.
 
 ## Configuração do Módulo
 
@@ -430,66 +498,6 @@ source.register(
 |--------|----------|-----------|
 | `MeuContrato` | `@JsonIgnoreProperties(ignoreUnknown=true)` | Representação local de `Contrato` |
 | `MeuCliente` | — | Cliente aninhado em `MeuContrato` |
-
----
-
-## Como Executar
-
-### Pré-requisitos
-
-- Java 21+
-- Maven não é necessário — o projeto inclui o **Maven Wrapper** (`mvnw`/`mvnw.cmd`) **na raiz**, que baixa automaticamente a versão correta do Maven na primeira execução. Todos os comandos são executados a partir da raiz (build multi-módulo); use `-pl <módulo>` para mirar um módulo específico.
-- **Docker** (apenas para os testes de integração) — os testes sobem o WildFly automaticamente via [Testcontainers](https://testcontainers.com/) (imagem `quay.io/wildfly/wildfly:40.0.0.Final-jdk21`); não é preciso baixar ou iniciar o servidor manualmente
-
-> Em todos os comandos, no Windows troque `./mvnw` por `mvnw.cmd`.
-
-### Subindo o javacred
-
-```bash
-./mvnw -pl javacred wildfly-jar:dev-watch
-# Disponível em http://localhost:8080/javacred
-```
-
-### Subindo o javacred-corretora
-
-```bash
-./mvnw -pl javacred-corretora wildfly-jar:dev-watch
-# Disponível em http://localhost:8081
-```
-
-> Os dois sobem ao mesmo tempo: a corretora usa `port-offset=1` (HTTP em :8081), evitando conflito com o javacred (:8080).
-
-### Executando o desktop (EJB Remoto)
-
-Requer o `javacred` rodando (passo acima) e o artefato do `javacred` no repositório local:
-
-```bash
-# uma vez, para publicar o jar de classes do javacred em ~/.m2
-./mvnw install -pl javacred -am -DskipTests
-
-./mvnw -pl javacred-desktop exec:java \
-  -Dexec.mainClass="br.com.casadocodigo.javacred.desktop.FinanciamentoMain"
-```
-
-### Executando os testes
-
-Os testes de integração sobem o WildFly em container (Testcontainers) e fazem o deploy do WAR automaticamente — **não é preciso iniciar nenhum servidor antes**. Basta ter o Docker em execução.
-
-A partir da raiz do projeto (build multi-módulo, em paralelo por padrão via `.mvn/maven.config`):
-
-```bash
-./mvnw verify
-```
-
-> Windows: `mvnw.cmd verify`
-
-Para rodar os testes de um módulo específico (e suas dependências):
-
-```bash
-./mvnw -pl javacred-desktop -am verify
-```
-
-> Os testes de integração rodam na fase `verify` (via `maven-failsafe-plugin`), depois do empacotamento do WAR. Por isso use `verify`, não `test`.
 
 ---
 
