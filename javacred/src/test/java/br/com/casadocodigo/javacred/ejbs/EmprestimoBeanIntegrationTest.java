@@ -75,12 +75,27 @@ public class EmprestimoBeanIntegrationTest {
     @Inject
     UserTransaction utx;
 
+    private Integer indiceId;
+
     @BeforeEach
     public void limparDados() throws Exception {
         utx.begin();
         em.createQuery("delete from Contrato ").executeUpdate();
         em.createQuery("delete from RegistroEmprestimo").executeUpdate();
+        em.createQuery("delete from IndiceValor").executeUpdate();
+        em.createQuery("delete from Indice").executeUpdate();
+
+        // Índice compartilhado: registrar empréstimo agora exige índice de correção.
+        Indice indice = new Indice("IPCAE");
+        em.persist(indice);
+        indiceId = indice.getId();
         utx.commit();
+    }
+
+    private Contrato novoContrato(Cliente cliente) {
+        Contrato contrato = new Contrato(cliente);
+        contrato.setIndiceCorrecao(contratoBean.buscarIndice(indiceId));
+        return contrato;
     }
 
     @Test
@@ -89,9 +104,9 @@ public class EmprestimoBeanIntegrationTest {
         Assertions.assertEquals(0, contratoBean.listarTodos().size());
 
         Cliente cliente = new Cliente("Fulano", false);
-        emprestimoBean.registrarEmprestimo(new Contrato(cliente));
+        emprestimoBean.registrarEmprestimo(novoContrato(cliente));
         try{
-            emprestimoBean.registrarEmprestimo(new Contrato(cliente));
+            emprestimoBean.registrarEmprestimo(novoContrato(cliente));
             Assertions.fail("Não pode haver um segundo empréstimo");
         }
         catch (JavacredApplicationException e){
@@ -115,7 +130,7 @@ public class EmprestimoBeanIntegrationTest {
         emprestimoBean.config(contratoBean, servicoAnaliseFinanceira);
 
         Cliente cliente = new Cliente("Ciclano", false);
-        Contrato contrato = new Contrato(cliente);
+        Contrato contrato = novoContrato(cliente);
         try{
             emprestimoBean.registrarEmprestimo(contrato);
             Assertions.fail("Não pode haver nenhum empréstimo");
@@ -140,8 +155,8 @@ public class EmprestimoBeanIntegrationTest {
         Assertions.assertEquals(0, contratoBean.listarTodos().size());
 
         Cliente cliente = new Cliente("Beltrano", true);
-        emprestimoBean.registrarEmprestimo(new Contrato(cliente));
-        emprestimoBean.registrarEmprestimo(new Contrato(cliente));
+        emprestimoBean.registrarEmprestimo(novoContrato(cliente));
+        emprestimoBean.registrarEmprestimo(novoContrato(cliente));
 
         Assertions.assertEquals(2, contratoBean.listarTodos().size(), "Os dois empréstimos devem ser concedidos pois é cliente preferencial");
 

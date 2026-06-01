@@ -82,6 +82,10 @@ public class ContratoBean {
 	    return em.createQuery("select i from Indice i join fetch i.valores", Indice.class).getResultList();
     }
 
+	public Indice buscarIndice(Integer id){
+		return em.find(Indice.class, id);
+	}
+
 	private double calculaPercentualCorrecao(Contrato contrato, List<Indice> indices){
 
 		Indice indiceAplicar = indices.stream()

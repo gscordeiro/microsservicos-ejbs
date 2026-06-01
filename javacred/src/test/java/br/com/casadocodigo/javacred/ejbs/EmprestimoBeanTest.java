@@ -2,6 +2,7 @@ package br.com.casadocodigo.javacred.ejbs;
 
 import br.com.casadocodigo.javacred.entidades.Cliente;
 import br.com.casadocodigo.javacred.entidades.Contrato;
+import br.com.casadocodigo.javacred.entidades.Indice;
 import br.com.casadocodigo.javacred.exceptions.JavacredApplicationException;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,6 +32,7 @@ public class EmprestimoBeanTest {
 
         Cliente cliente = new Cliente("Beltrano", true);
         Contrato contrato = new Contrato(cliente);
+        contrato.setIndiceCorrecao(new Indice("IPCAE"));
 
         emprestimoBean.registrarEmprestimo(contrato);
 
@@ -58,6 +60,7 @@ public class EmprestimoBeanTest {
 
         Cliente cliente = new Cliente("Fulano", false);
         Contrato contrato = new Contrato(cliente);
+        contrato.setIndiceCorrecao(new Indice("IPCAE"));
 
         try {
 

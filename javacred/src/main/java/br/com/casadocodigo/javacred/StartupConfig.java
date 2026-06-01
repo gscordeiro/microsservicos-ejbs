@@ -1,5 +1,6 @@
 package br.com.casadocodigo.javacred;
 
+import br.com.casadocodigo.javacred.control.GeradorContratos;
 import br.com.casadocodigo.javacred.ejbs.ContratoBean;
 import br.com.casadocodigo.javacred.entidades.Cliente;
 import br.com.casadocodigo.javacred.entidades.Contrato;
@@ -12,6 +13,7 @@ import jakarta.faces.annotation.FacesConfig;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import java.time.YearMonth;
 
 @Singleton
 @Startup
@@ -24,6 +26,9 @@ public class StartupConfig {
     @Inject
     private ContratoBean contratoBean;
 
+    @Inject
+    private GeradorContratos geradorContratos;
+
     @PostConstruct
     public void startup(){
 
@@ -35,6 +40,10 @@ public class StartupConfig {
             Contrato contrato = new Contrato(new Cliente("Fulano", true));
             contrato.setDescricao("Contrato teste");
             contrato.setValor(12_000.0);
+            // Já nasce com índice válido para participar da correção de saldo
+            // sem precisar de limpeza manual depois.
+            contrato.setIndiceCorrecao(geradorContratos.recuperarOuCriarIndice());
+            contrato.setUltimaCorrecao(YearMonth.now().minusMonths(2));
             contratoBean.salvar(contrato);
 
         }

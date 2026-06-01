@@ -47,7 +47,12 @@
 							<f:selectItem itemLabel="-- Selecione um cliente --" noSelectionOption="true"/>
 							<f:selectItems value="#{clientes}" var="c" itemValue="#{c}" itemLabel="#{c.nome}"/>
 						</h:selectOneMenu>
-						
+
+				Índice de correção: <h:selectOneMenu id="indice" value="#{contrato.indiceCorrecao}" required="true" requiredMessage="Informe o índice de correção">
+							<f:selectItem itemLabel="-- Selecione um índice --" noSelectionOption="true"/>
+							<f:selectItems value="#{emprestimoController.indices}" var="i" itemValue="#{i}" itemLabel="#{i.nome}"/>
+						</h:selectOneMenu>
+
 				Descrição: <h:inputText id="descricao" value="#{contrato.descricao}"/>
 				Valor: <h:inputText id="valor" value="#{contrato.valor}"/>
 				Qtde Meses: <h:inputText id="qtdeMeses" value="#{contrato.quantidadeMeses}"/>

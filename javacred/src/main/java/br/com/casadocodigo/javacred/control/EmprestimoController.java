@@ -10,9 +10,11 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import br.com.casadocodigo.javacred.ejbs.ClienteBean;
+import br.com.casadocodigo.javacred.ejbs.ContratoBean;
 import br.com.casadocodigo.javacred.ejbs.EmprestimoBean;
 import br.com.casadocodigo.javacred.entidades.Cliente;
 import br.com.casadocodigo.javacred.entidades.Contrato;
+import br.com.casadocodigo.javacred.entidades.Indice;
 
 @Named
 @RequestScoped
@@ -20,20 +22,25 @@ public class EmprestimoController {
 
 	
 	private List<Cliente> clientes;
-	
+	private List<Indice> indices;
+
 	private Contrato contrato;
 	private List<Contrato> contratos;
-	
+
 	@Inject
 	private ClienteBean clienteBean;
-	
+
 	@Inject
 	private EmprestimoBean emprestimoBean;
-	
+
+	@Inject
+	private ContratoBean contratoBean;
+
 	@PostConstruct
 	public void init(){
 		contrato = new Contrato();
 		clientes = clienteBean.listarTodos(); //FIXME lazy
+		indices = contratoBean.buscarIndices();
 	}
 	
 	public List<Contrato> getContratos() {
@@ -82,5 +89,9 @@ public class EmprestimoController {
 
 	public List<Cliente> getClientes() {
 		return clientes;
+	}
+
+	public List<Indice> getIndices() {
+		return indices;
 	}
 }

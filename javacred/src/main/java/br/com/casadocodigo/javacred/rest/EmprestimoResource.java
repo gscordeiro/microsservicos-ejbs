@@ -5,6 +5,7 @@ import br.com.casadocodigo.javacred.ejbs.ContratoBean;
 import br.com.casadocodigo.javacred.ejbs.EmprestimoBean;
 import br.com.casadocodigo.javacred.entidades.Cliente;
 import br.com.casadocodigo.javacred.entidades.Contrato;
+import br.com.casadocodigo.javacred.entidades.Indice;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -54,9 +55,16 @@ public class EmprestimoResource {
             contrato.setCliente(clienteBean.buscarPorId(cliente.getId()));
         }
 
+        // Mesmo padrão do cliente: o corpo informa o índice só pelo id; resolvemos
+        // a entidade completa. A obrigatoriedade é validada no EmprestimoBean.
+        Indice indice = contrato.getIndiceCorrecao();
+        if (indice != null && indice.getId() != null) {
+            contrato.setIndiceCorrecao(contratoBean.buscarIndice(indice.getId()));
+        }
+
         try {
-            emprestimoBean.registrarEmprestimo(contrato);
-            return Response.ok(contrato).build();
+            Contrato salvo = emprestimoBean.registrarEmprestimo(contrato);
+            return Response.ok(salvo).build();
         } catch (Exception e) {
             // Espelha o FacesMessage do controller: devolve a mensagem de negócio.
             return Response.status(422) // Unprocessable Entity
