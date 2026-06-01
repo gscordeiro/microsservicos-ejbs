@@ -1,6 +1,8 @@
 package br.com.casadocodigo.javacred.control;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.concurrent.Future;
 
 public class Benchmark {
@@ -43,6 +45,7 @@ public class Benchmark {
         this.resultadoAsync = resultadoAsync;
     }
 
+    @JsonIgnore
     public Future<Double> getResultadoAsync() {
         return resultadoAsync;
     }

@@ -1,6 +1,6 @@
 package br.com.casadocodigo.javacred.entidades;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -36,8 +36,10 @@ public class Cliente implements Serializable {
 		this.preferencial = preferencial;
 	}
 
+	// WRITE_ONLY: aceita contratos no corpo do POST (cascade PERSIST), mas não
+	// serializa de volta — evita o ciclo Cliente <-> Contrato na resposta JSON.
 	@XmlTransient
-	@JsonIgnore
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@OneToMany(mappedBy="cliente", cascade=CascadeType.ALL)
 	private Set<Contrato> contratos = new LinkedHashSet<>();
 
