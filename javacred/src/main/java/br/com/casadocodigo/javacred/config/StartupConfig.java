@@ -1,4 +1,4 @@
-package br.com.casadocodigo.javacred;
+package br.com.casadocodigo.javacred.config;
 
 import br.com.casadocodigo.javacred.control.GeradorContratos;
 import br.com.casadocodigo.javacred.ejbs.ContratoBean;

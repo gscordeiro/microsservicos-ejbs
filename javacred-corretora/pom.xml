@@ -54,6 +54,15 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- Driver H2 empacotado no WAR para o @DataSourceDefinition (config.DatasourceConfig)
+         resolver o className org.h2.jdbcx.JdbcDataSource pelo classloader do deployment.
+         scope runtime: o código não referencia classes do H2, só a string do className. -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
